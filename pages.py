@@ -8,75 +8,81 @@ def sec(cls, inner, id_attr=""):
 def build_all(write, page, hero_dark, breadcrumb, biz_grid, core_model_flow, stat_strip, cta_band, sub_grid, pin_story, marquee, photo_grid):
 
     # ============================================================ TOP =====
-    top_hero = hero_dark(
-        eyebrow="HUMAN DATA &amp; HEALTHTECH",
-        title_html="人を測る。<br>データでわかる。<br>未来を変える。",
-        sub="認知・身体・行動を測り、データから次の一歩をつくる。SMARTSTARTは、人の可能性をひらくHuman Data & HealthTech企業です。",
-        ctas=[("サービスを探す", "#business", ""), ("導入について相談する", "/contact/", "outline on-dark")],
-        lg=True, scroll_cue="SCROLL",
-        photos=["/assets/img/kids.jpg", "/assets/img/athlete.jpg", "/assets/img/senior.jpg", "/assets/img/office.jpg"],
-    )
+    top_hero = """
+    <section class="editorial-hero">
+      <div class="editorial-hero-image">
+        <img src="/assets/img/athlete.jpg" alt="スタートダッシュするアスリート">
+        <div class="editorial-hero-copy">
+          <p>HUMAN DATA &amp; HEALTHTECH</p>
+          <h1>人を測る。<br>未来を変える。</h1>
+          <span>認知・身体・行動をデータに変え、人の可能性をひらく。</span>
+        </div>
+        <span class="editorial-index">SS / 001</span>
+      </div>
+      <div class="visual-strips" aria-hidden="true">
+        <div><img src="/assets/img/kids.jpg" alt=""></div>
+        <div><img src="/assets/img/office.jpg" alt=""></div>
+        <div><img src="/assets/img/senior.jpg" alt=""></div>
+      </div>
+      <div class="editorial-statement">
+        <p class="statement-brand">SMARTSTART<span>Human Data Company</span></p>
+        <div>
+          <p class="eyebrow">Our Mission</p>
+          <h2>見えなかった「人」を、<br>データにする。</h2>
+          <p>測る。わかる。高める。健康、安全、成長、パフォーマンスを、感覚だけではなく確かなデータから前へ進めます。</p>
+          <div class="cta-row"><a href="#business" class="pill-btn">事業を見る</a><a href="/contact/" class="pill-btn outline">導入を相談する</a></div>
+        </div>
+      </div>
+    </section>
+    """.strip() + "\n"
 
     top_audience = """
-    <nav class="audience-nav" aria-label="目的から探す">
-      <a href="/measurement/reaxion-well/"><small>FOR BUSINESS</small><b>働く人の健康と安全 <span>→</span></b></a>
-      <a href="/measurement/fall-risk/"><small>FOR CARE</small><b>高齢者の自立支援 <span>→</span></b></a>
-      <a href="/reaxion/pro/"><small>FOR SPORTS</small><b>競技力の向上 <span>→</span></b></a>
-      <a href="/reaxion/kids/"><small>FOR KIDS</small><b>子どもの成長 <span>→</span></b></a>
+    <nav class="audience-nav editorial-keywords" aria-label="目的から探す">
+      <a href="/measurement/reaxion-well/">Health <span>×</span></a>
+      <a href="/measurement/fall-risk/">Safety <span>×</span></a>
+      <a href="/reaxion/pro/">Performance <span>×</span></a>
+      <a href="/reaxion/kids/">Growth <span>↗</span></a>
     </nav>
-    """
+    """.strip() + "\n"
 
-    top_concept = sec("band-surface band-border-t", f"""
-      <div class="section-head">
-        <p class="eyebrow">Brand Concept</p>
-        <h2 class="h-lg">見えなかった「人」を、データにする。</h2>
-        <p class="lede">認知。身体。反応。行動。人には、まだ測れていないものがあります。SMARTSTARTは、Human Dataとテクノロジーによって、人の健康、安全、成長、パフォーマンスを支えます。</p>
+    top_focus = """
+    <section class="feature-focus">
+      <img src="/assets/img/athlete.jpg" alt="競技に取り組むアスリート">
+      <canvas class="wave-canvas" data-variant="story" aria-hidden="true"></canvas>
+      <div class="feature-focus-copy">
+        <p class="eyebrow on-dark">Human Data</p>
+        <h2>人の状態を、<br>ひとつの数字で<br>終わらせない。</h2>
+        <p>見る。気づく。考える。判断する。動く。SMARTSTARTは、認知と身体が連動する瞬間を測定し、変化を継続的に捉えます。</p>
+        <span>MEASURE / ANALYZE / IMPROVE</span>
       </div>
-      <div class="tag-row">
-        <span class="tag-pill">子どもの成長</span><span class="tag-pill">アスリートのパフォーマンス</span>
-        <span class="tag-pill">働く人の安全と健康</span><span class="tag-pill">高齢者の自立した生活</span>
+    </section>
+    """.strip() + "\n"
+
+    top_core = sec("band-surface brand-process", f"""
+      <div class="brand-process-head">
+        <p class="eyebrow">Brand / 私たちの方法</p>
+        <h2 class="h-lg">測ることから、<br>変化は始まる。</h2>
+      </div>
+      <div class="brand-process-list">
+        <article><span>01</span><div><h3>Measure / 測る</h3><p>認知機能、身体機能、反応、行動。これまで感覚で捉えてきた状態を、独自の測定技術で可視化します。</p></div><a href="/measurement/">→</a></article>
+        <article><span>02</span><div><h3>Analyze / わかる</h3><p>クラウド、統計、AIを組み合わせ、個人・集団・経時変化から意味のあるHuman Dataへ変換します。</p></div><a href="/human-data/">→</a></article>
+        <article><span>03</span><div><h3>Improve / 高める</h3><p>結果をトレーニングや行動変容へつなげ、測定と改善を一度きりで終わらせない循環をつくります。</p></div><a href="/reaxion/">→</a></article>
       </div>
     """)
 
-    top_people = sec("band-surface", f"""
-      {photo_grid([
-          ("/assets/img/kids.jpg", "公園で走る子ども", "子どもの成長", "Growth"),
-          ("/assets/img/athlete.jpg", "スタートダッシュするアスリート", "アスリートのパフォーマンス", "Performance"),
-          ("/assets/img/office.jpg", "オフィスで働く人", "働く人の安全と健康", "Safety"),
-          ("/assets/img/senior.jpg", "公園で体を動かす高齢者たち", "高齢者の自立した生活", "Health"),
-      ])}
-    """)
-
-    top_marquee = marquee(["HEALTH", "SAFETY", "PERFORMANCE", "GROWTH"])
-
-    top_core = sec("band-alt band-border-t", f"""
+    top_business = sec("band-dark business-editorial", f"""
       <div class="section-head">
-        <p class="eyebrow">Core Model</p>
-        <h2 class="h-lg">MEASURE &rarr; ANALYZE &rarr; IMPROVE</h2>
-        <p class="lede">一度だけの測定ではなく、人の変化を継続的に捉えていく循環です。</p>
-      </div>
-      {core_model_flow()}
-    """)
-
-    top_business = sec("band-surface band-border-t", f"""
-      <div class="section-head">
-        <p class="eyebrow">Business Architecture</p>
-        <h2 class="h-lg">事業を、5つの機能として。</h2>
-        <p class="lede">MEASUREMENT・REAXION・HUMAN DATAがHuman Dataの循環を担い、SYSTEM DEVELOPMENTとEVENT&nbsp;&amp;&nbsp;CONSULTINGがそれを支えます。</p>
+        <p class="eyebrow on-dark">Business / 事業領域</p>
+        <h2 class="h-lg">Human Dataを、<br>社会で使える力へ。</h2>
+        <p class="lede">測定、トレーニング、データ、開発、現場支援。5つの機能を組み合わせ、課題に合わせた仕組みをつくります。</p>
       </div>
       {biz_grid()}
     """, id_attr="business")
 
-    top_story = pin_story([
-        "見る。気づく。考える。判断する。動く。私たちの日常には、認知と身体が連動する瞬間が無数にあります。",
-        "SMARTSTARTは、これまで感覚として捉えられてきた人の状態をテクノロジーによって測定し、Human&nbsp;Dataとして蓄積・分析します。そして、その結果を健康、安全、成長、スポーツパフォーマンスなど、人のより良い未来につなげていきます。",
-        "MEASURE.<br>UNDERSTAND.<br>IMPROVE.",
-    ])
-
-    top_stats = sec("band-surface band-border-t", f"""
+    top_stats = sec("band-alt stats-editorial", f"""
       <div class="section-head">
-        <p class="eyebrow">SMARTSTART in Numbers</p>
-        <h2 class="h-lg">確かな実績を、数字で。</h2>
+        <p class="eyebrow">Project / 数字で見るSMARTSTART</p>
+        <h2 class="h-lg">積み重ねてきた、<br>測定と現場。</h2>
       </div>
       {stat_strip([
           ("設立", "ESTABLISHED", "2013", ""),
@@ -85,7 +91,7 @@ def build_all(write, page, hero_dark, breadcrumb, biz_grid, core_model_flow, sta
       ])}
     """)
 
-    top_news = sec("band-alt band-border-t", f"""
+    top_news = sec("band-surface news-editorial", f"""
       <div class="section-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;">
         <div><p class="eyebrow">News</p><h2 class="h-lg" style="margin-bottom:0;">新着情報</h2></div>
         <a href="/news/" class="pill-btn outline">一覧を見る</a>
@@ -106,7 +112,7 @@ def build_all(write, page, hero_dark, breadcrumb, biz_grid, core_model_flow, sta
     write("/", page(
         "人を測る。データでわかる。未来を変える。",
         "SMARTSTARTは、人の認知・身体・行動を測定・分析し、健康・安全・成長・パフォーマンスの向上につなげるHuman Data & HealthTech企業です。",
-        top_hero + top_audience + top_concept + top_people + top_marquee + top_core + top_business + top_story + top_stats + top_news + top_cta,
+        top_hero + top_audience + top_focus + top_core + top_business + top_stats + top_news + top_cta,
     ))
 
     # ============================================================ ABOUT ===
