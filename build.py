@@ -609,11 +609,11 @@ def page(title, description, body):
 <meta property="og:type" content="website">
 <meta property="og:title" content="{title} | SMARTSTART">
 <meta property="og:description" content="{description}">
-<meta property="og:image" content="/assets/img/og.png">
+<meta property="og:image" content="https://smartstart-human-data.oxy1234.chatgpt.site/assets/img/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{title} | SMARTSTART">
 <meta name="twitter:description" content="{description}">
-<meta name="twitter:image" content="/assets/img/og.png">
+<meta name="twitter:image" content="https://smartstart-human-data.oxy1234.chatgpt.site/assets/img/og.png">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/assets/css/style.css">
 </head>
