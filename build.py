@@ -21,6 +21,17 @@ CSS = r"""
   --line:#DEDEDA;
   --accent:#2F5CFF;
   --accent-soft:rgba(47,92,255,.08);
+  --radius-sm:8px;
+  --radius-md:16px;
+  --radius-pill:999px;
+  --shadow-lift:0 20px 44px -22px rgba(10,10,10,.35);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --duration-fast:180ms;
+  --duration-base:320ms;
+  --space-1:8px;
+  --space-2:16px;
+  --space-3:24px;
+  --space-4:40px;
   --mono:"SF Mono","SFMono-Regular",Menlo,Consolas,monospace;
   --sans:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Helvetica Neue",Arial,sans-serif;
   --serif:"Hiragino Mincho ProN","Yu Mincho","Hiragino Mincho Pro",serif;
@@ -34,11 +45,14 @@ a{color:inherit;text-decoration:none;}
 button,a{touch-action:manipulation;}
 :focus-visible{outline:3px solid var(--accent);outline-offset:4px;}
 ::selection{background:var(--ink);color:var(--bg);}
+.skip-link{position:fixed;left:16px;top:12px;z-index:100;background:var(--accent);color:#fff;padding:10px 16px;border-radius:var(--radius-pill);font-size:12px;font-weight:700;transform:translateY(-160%);transition:transform var(--duration-fast) ease;}
+.skip-link:focus{transform:translateY(0);}
 .container{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,4vw,48px);}
 .overflow-x{overflow-x:auto;}
 
 /* ---------- header ---------- */
 .site-header{position:sticky;top:0;z-index:40;background:rgba(245,245,242,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(18px);}
+.reading-progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform:scaleX(0);transform-origin:left;background:var(--accent);will-change:transform;}
 .site-header-inner{max-width:var(--maxw);margin:0 auto;padding:13px clamp(20px,4vw,48px);display:flex;align-items:center;gap:28px;}
 .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px;letter-spacing:-.02em;white-space:nowrap;}
 .logo .mark{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:12px;line-height:1;box-shadow:0 0 0 5px var(--accent-soft);}
@@ -78,9 +92,11 @@ button,a{touch-action:manipulation;}
 .menu-meta{font-family:var(--mono);font-size:11px;color:#8C8C86;letter-spacing:.04em;}
 
 /* ---------- buttons ---------- */
-.pill-btn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;border-radius:99px;padding:13px 26px;
-  transition:opacity .25s,transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s;}
+.pill-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;border-radius:var(--radius-pill);padding:13px 26px;min-height:46px;
+  transition:opacity var(--duration-fast),transform var(--duration-base) var(--ease-out),box-shadow var(--duration-base);}
 .pill-btn:hover{opacity:.85;transform:translateY(-3px);box-shadow:0 14px 28px -16px rgba(10,10,10,.45);}
+.pill-btn:active{transform:translateY(0) scale(.98);box-shadow:none;}
+.pill-btn[aria-disabled="true"],.pill-btn:disabled{opacity:.42;pointer-events:none;}
 .pill-btn.on-dark{background:var(--bg);color:var(--ink);}
 .pill-btn.outline{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink);}
 .pill-btn.outline.on-dark{color:var(--bg);box-shadow:inset 0 0 0 1.5px var(--bg);}
@@ -325,6 +341,7 @@ p.lede{font-size:15.5px;color:var(--muted);max-width:62ch;line-height:1.9;}
 .sub-card{border:1px solid var(--line);background:var(--surface);padding:26px 26px 28px;display:flex;flex-direction:column;gap:12px;
   transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s cubic-bezier(.16,1,.3,1),border-color .3s;}
 .sub-card:hover{transform:translateY(-6px);box-shadow:0 20px 44px -22px rgba(10,10,10,.35);border-color:var(--ink);}
+.sub-card:focus-visible,.biz-card:focus-visible,.case-card:focus-within{outline:3px solid var(--accent);outline-offset:3px;}
 .sub-card .sc-tag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;}
 .sub-card h3{margin:0;font-size:1.05rem;font-weight:800;letter-spacing:-.01em;}
 .sub-card .sc-copy{font-size:13.5px;font-weight:700;color:var(--accent);}
@@ -410,6 +427,13 @@ th{width:180px;font-weight:700;color:var(--muted);font-size:12.5px;}
 @media (max-width:760px){
   .stat-row{flex-direction:column;align-items:flex-start;gap:6px;}
 }
+@media (hover:none){
+  .pill-btn:hover,.sub-card:hover,.biz-card:hover{transform:none;box-shadow:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}
+}
 """
 
 JS = r"""
@@ -417,25 +441,63 @@ JS = r"""
   var btn = document.getElementById('menuBtn');
   var menu = document.getElementById('siteMenu');
   var close = document.getElementById('menuClose');
+  var lastFocus = null;
   if(!btn || !menu) return;
   function openMenu(){
+    lastFocus = document.activeElement;
     menu.classList.add('is-open');
     menu.setAttribute('aria-hidden','false');
     btn.setAttribute('aria-expanded','true');
+    btn.setAttribute('aria-label','メニューを閉じる');
     document.body.style.overflow='hidden';
+    if(close) close.focus();
   }
   function closeMenu(){
     menu.classList.remove('is-open');
     menu.setAttribute('aria-hidden','true');
     btn.setAttribute('aria-expanded','false');
+    btn.setAttribute('aria-label','メニューを開く');
     document.body.style.overflow='';
+    if(lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
   }
   btn.addEventListener('click', function(){
     menu.classList.contains('is-open') ? closeMenu() : openMenu();
   });
   if(close) close.addEventListener('click', closeMenu);
   menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeMenu(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && menu.classList.contains('is-open')) closeMenu();
+    if(e.key==='Tab' && menu.classList.contains('is-open')){
+      var focusable = menu.querySelectorAll('a,button');
+      if(!focusable.length) return;
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if(e.shiftKey && document.activeElement===first){e.preventDefault();last.focus();}
+      else if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus();}
+    }
+  });
+})();
+
+/* ---- reading progress and current navigation ---- */
+(function(){
+  var bar = document.querySelector('.reading-progress');
+  var links = document.querySelectorAll('.header-nav a,.menu-list a');
+  var path = location.pathname.replace(/\/+$/, '') || '/';
+  links.forEach(function(link){
+    var linkPath = new URL(link.href, location.href).pathname.replace(/\/+$/, '') || '/';
+    if(linkPath===path) link.setAttribute('aria-current','page');
+  });
+  if(!bar) return;
+  var queued = false;
+  function update(){
+    var max = document.documentElement.scrollHeight - innerHeight;
+    var value = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    bar.style.transform = 'scaleX(' + value + ')';
+    queued = false;
+  }
+  addEventListener('scroll', function(){
+    if(!queued){queued=true;requestAnimationFrame(update);}
+  }, {passive:true});
+  update();
 })();
 
 /* ---- scroll reveal ---- */
@@ -602,6 +664,7 @@ def header():
     )
     return f"""
 <header class="site-header">
+  <div class="reading-progress" aria-hidden="true"></div>
   <div class="site-header-inner">
     <a href="/" class="logo"><span class="mark">&#10005;</span>SMARTSTART</a>
     <nav class="header-nav" aria-label="主要メニュー">
@@ -693,8 +756,9 @@ def page(title, description, body):
 <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">本文へ移動</a>
 {header()}
-<main>
+<main id="main-content" tabindex="-1">
 {body}
 </main>
 {footer()}

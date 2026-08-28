@@ -3,25 +3,63 @@
   var btn = document.getElementById('menuBtn');
   var menu = document.getElementById('siteMenu');
   var close = document.getElementById('menuClose');
+  var lastFocus = null;
   if(!btn || !menu) return;
   function openMenu(){
+    lastFocus = document.activeElement;
     menu.classList.add('is-open');
     menu.setAttribute('aria-hidden','false');
     btn.setAttribute('aria-expanded','true');
+    btn.setAttribute('aria-label','メニューを閉じる');
     document.body.style.overflow='hidden';
+    if(close) close.focus();
   }
   function closeMenu(){
     menu.classList.remove('is-open');
     menu.setAttribute('aria-hidden','true');
     btn.setAttribute('aria-expanded','false');
+    btn.setAttribute('aria-label','メニューを開く');
     document.body.style.overflow='';
+    if(lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
   }
   btn.addEventListener('click', function(){
     menu.classList.contains('is-open') ? closeMenu() : openMenu();
   });
   if(close) close.addEventListener('click', closeMenu);
   menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeMenu(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && menu.classList.contains('is-open')) closeMenu();
+    if(e.key==='Tab' && menu.classList.contains('is-open')){
+      var focusable = menu.querySelectorAll('a,button');
+      if(!focusable.length) return;
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if(e.shiftKey && document.activeElement===first){e.preventDefault();last.focus();}
+      else if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus();}
+    }
+  });
+})();
+
+/* ---- reading progress and current navigation ---- */
+(function(){
+  var bar = document.querySelector('.reading-progress');
+  var links = document.querySelectorAll('.header-nav a,.menu-list a');
+  var path = location.pathname.replace(/\/+$/, '') || '/';
+  links.forEach(function(link){
+    var linkPath = new URL(link.href, location.href).pathname.replace(/\/+$/, '') || '/';
+    if(linkPath===path) link.setAttribute('aria-current','page');
+  });
+  if(!bar) return;
+  var queued = false;
+  function update(){
+    var max = document.documentElement.scrollHeight - innerHeight;
+    var value = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    bar.style.transform = 'scaleX(' + value + ')';
+    queued = false;
+  }
+  addEventListener('scroll', function(){
+    if(!queued){queued=true;requestAnimationFrame(update);}
+  }, {passive:true});
+  update();
 })();
 
 /* ---- scroll reveal ---- */
