@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ja" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>人を測る。未来を変える。｜SMARTSTART</title>
+  <meta name="description" content="SMARTSTARTは、人の認知・身体・行動を測定・分析し、健康・安全・成長・パフォーマンスの向上につなげるHuman Data & HealthTech企業です。">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#eef2ff', 100:'#dfe6ff', 400:'#7191ff', 500:'#2f5cff', 600:'#2348db', 950:'#080d22' },
+            ink: '#09090b',
+            paper: '#f5f5f2',
+            muted: '#6b6b66'
+          },
+          fontFamily: {
+            sans: ['Inter','Noto Sans JP','Hiragino Sans','sans-serif'],
+            mono: ['SFMono-Regular','Menlo','monospace']
+          },
+          boxShadow: {
+            glow: '0 24px 80px -28px rgba(47,92,255,.55)',
+            lift: '0 28px 70px -34px rgba(13,24,66,.34)'
+          },
+          transitionTimingFunction: { fluid: 'cubic-bezier(.16,1,.3,1)' }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    ::selection{background:#2f5cff;color:#fff}
+    .mesh{background-image:radial-gradient(circle at 18% 25%,rgba(47,92,255,.26),transparent 34%),radial-gradient(circle at 82% 72%,rgba(105,68,255,.18),transparent 30%)}
+    .grid-lines{background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:56px 56px}
+    .text-balance{text-wrap:balance}
+    [data-reveal]{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+    [data-reveal].is-visible{opacity:1;transform:none}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition-duration:.01ms!important}[data-reveal]{opacity:1;transform:none}}
+  </style>
+</head>
+<body class="bg-paper font-sans text-ink antialiased overflow-x-hidden">
+  <a href="#main" class="fixed left-4 top-3 z-[100] -translate-y-24 rounded-full bg-brand-500 px-4 py-2 text-xs font-bold text-white transition-transform focus:translate-y-0">本文へ移動</a>
+
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-ink/70 text-white backdrop-blur-xl">
+    <div class="mx-auto flex h-16 max-w-[1440px] items-center gap-8 px-5 md:px-10">
+      <a href="#top" class="group flex items-center gap-3 font-black tracking-[-.03em]">
+        <span class="grid size-7 place-items-center rounded-full bg-gradient-to-br from-brand-400 via-brand-500 to-violet-600 text-xs shadow-glow transition-transform duration-500 ease-fluid group-hover:rotate-90">×</span>
+        SMARTSTART
+      </a>
+      <nav aria-label="主要ナビゲーション" class="ml-auto hidden items-center gap-7 text-xs font-semibold lg:flex">
+        <a class="transition-opacity hover:opacity-55" href="#business">事業</a>
+        <a class="transition-opacity hover:opacity-55" href="#approach">Human Data</a>
+        <a class="transition-opacity hover:opacity-55" href="#impact">実績</a>
+        <a class="transition-opacity hover:opacity-55" href="#about">私たちについて</a>
+        <a class="rounded-full border border-white/30 px-5 py-2.5 transition duration-300 hover:-translate-y-0.5 hover:border-white hover:bg-white hover:text-ink" href="#contact">相談する</a>
+      </nav>
+      <button id="menuButton" type="button" aria-expanded="false" aria-controls="mobileMenu" class="ml-auto rounded-full border border-white/25 px-4 py-2 text-[10px] font-bold tracking-[.14em] transition hover:bg-white hover:text-ink lg:hidden">MENU</button>
+    </div>
+    <div id="progress" class="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-brand-500"></div>
+  </header>
+
+  <div id="mobileMenu" class="fixed inset-0 z-40 hidden bg-ink px-5 pb-10 pt-24 text-white lg:hidden">
+    <nav class="flex flex-col border-t border-white/15 text-2xl font-bold">
+      <a class="border-b border-white/15 py-5" href="#business">事業</a>
+      <a class="border-b border-white/15 py-5" href="#approach">Human Data</a>
+      <a class="border-b border-white/15 py-5" href="#impact">実績</a>
+      <a class="border-b border-white/15 py-5" href="#about">私たちについて</a>
+      <a class="mt-8 rounded-full bg-white px-6 py-4 text-center text-sm text-ink" href="#contact">導入を相談する</a>
+    </nav>
+  </div>
+
+  <main id="main">
+    <section id="top" class="relative flex min-h-[760px] items-end overflow-hidden bg-ink text-white md:min-h-screen">
+      <img src="/assets/img/athlete.jpg" alt="スタートダッシュするアスリート" class="absolute inset-0 h-full w-full object-cover object-center opacity-70 transition duration-[1600ms] ease-fluid hover:scale-[1.025] hover:opacity-80">
+      <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-black/5"></div>
+      <div class="mesh grid-lines absolute inset-0"></div>
+      <div class="absolute -right-24 top-1/3 h-96 w-96 rounded-full bg-brand-500/20 blur-[100px]"></div>
+      <div class="relative mx-auto grid w-full max-w-[1440px] gap-10 px-5 pb-16 pt-36 md:px-10 md:pb-24 lg:grid-cols-[1.25fr_.75fr] lg:items-end">
+        <div data-reveal>
+          <p class="mb-5 font-mono text-[10px] tracking-[.2em] text-brand-100">HUMAN DATA & HEALTHTECH</p>
+          <h1 class="text-balance text-[clamp(3.5rem,9vw,8.8rem)] font-black leading-[.95] tracking-[-.065em]">人を測る。<br>未来を変える。</h1>
+        </div>
+        <div class="max-w-md lg:pb-3" data-reveal>
+          <p class="text-sm leading-8 text-white/75 md:text-base">認知・身体・行動をデータに変え、健康、安全、成長、パフォーマンスの向上へ。測定から改善までを一貫して支援します。</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#business" class="group inline-flex min-h-12 items-center gap-3 rounded-full bg-white px-6 text-sm font-bold text-ink shadow-glow transition duration-500 ease-fluid hover:-translate-y-1 hover:shadow-[0_28px_70px_-24px_rgba(113,145,255,.8)]">事業を見る <span class="transition-transform group-hover:translate-x-1">→</span></a>
+            <a href="#contact" class="inline-flex min-h-12 items-center rounded-full border border-white/35 bg-white/5 px-6 text-sm font-bold backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-white hover:bg-white/10">導入を相談する</a>
+          </div>
+        </div>
+      </div>
+      <span class="absolute bottom-5 right-5 font-mono text-[9px] tracking-[.18em] text-white/45 md:right-10">SS / HUMAN DATA / 001</span>
+    </section>
+
+    <section aria-label="対象領域" class="grid border-b border-black/15 bg-white sm:grid-cols-3">
+      <a href="#business" class="group flex items-center justify-between border-b border-black/10 px-5 py-6 transition duration-500 hover:bg-brand-50 sm:border-b-0 sm:border-r md:px-10">
+        <span><small class="block font-mono text-[9px] tracking-[.16em] text-brand-500">FOR ENTERPRISE</small><b class="mt-1 block text-lg">大手企業</b></span><span class="transition-transform group-hover:translate-x-1">↗</span>
+      </a>
+      <a href="#business" class="group flex items-center justify-between border-b border-black/10 px-5 py-6 transition duration-500 hover:bg-brand-50 sm:border-b-0 sm:border-r md:px-10">
+        <span><small class="block font-mono text-[9px] tracking-[.16em] text-brand-500">FOR GOVERNMENT</small><b class="mt-1 block text-lg">自治体・介護</b></span><span class="transition-transform group-hover:translate-x-1">↗</span>
+      </a>
+      <a href="#business" class="group flex items-center justify-between px-5 py-6 transition duration-500 hover:bg-brand-50 md:px-10">
+        <span><small class="block font-mono text-[9px] tracking-[.16em] text-brand-500">FOR SPORTS</small><b class="mt-1 block text-lg">スポーツチーム</b></span><span class="transition-transform group-hover:translate-x-1">↗</span>
+      </a>
+    </section>
+
+    <section id="about" class="relative overflow-hidden bg-white py-24 md:py-36 lg:py-44">
+      <div class="absolute -left-44 top-24 h-96 w-96 rounded-full bg-brand-100/80 blur-[110px]"></div>
+      <div class="relative mx-auto grid max-w-7xl gap-12 px-5 md:px-10 lg:grid-cols-[.65fr_1.35fr] lg:gap-28">
+        <div data-reveal>
+          <p class="font-mono text-[10px] tracking-[.18em] text-brand-500">OUR MISSION</p>
+          <p class="mt-3 text-sm font-black">SMARTSTART</p>
+        </div>
+        <div data-reveal>
+          <h2 class="text-balance max-w-4xl text-[clamp(2.6rem,6.2vw,6.2rem)] font-black leading-[1.06] tracking-[-.055em]">見えなかった「人」を、<span class="bg-gradient-to-r from-brand-500 to-violet-600 bg-clip-text text-transparent">データ</span>にする。</h2>
+          <div class="mt-10 grid gap-8 border-t border-black/15 pt-8 md:grid-cols-2">
+            <p class="text-sm leading-8 text-muted">見る、気づく、考える、判断する、動く。人には、まだ測れていない能力や変化があります。</p>
+            <p class="text-sm leading-8 text-muted">SMARTSTARTは独自の測定技術とHuman Dataによって、組織と一人ひとりの次の行動を支えます。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="business" class="bg-paper py-24 md:py-36">
+      <div class="mx-auto max-w-7xl px-5 md:px-10">
+        <div class="mb-14 flex flex-col gap-6 md:mb-20 md:flex-row md:items-end md:justify-between" data-reveal>
+          <div><p class="font-mono text-[10px] tracking-[.18em] text-brand-500">BUSINESS</p><h2 class="mt-4 text-4xl font-black tracking-[-.045em] md:text-6xl">課題に合わせた、3つの入口。</h2></div>
+          <p class="max-w-md text-sm leading-7 text-muted">測定・トレーニング・データを組み合わせ、現場で使える仕組みとして提供します。</p>
+        </div>
+        <div class="grid gap-5 lg:grid-cols-3">
+          <a href="/measurement/" class="group relative min-h-[480px] overflow-hidden rounded-3xl bg-ink text-white shadow-lift transition duration-700 ease-fluid hover:-translate-y-3 hover:shadow-glow" data-reveal>
+            <img src="/assets/img/office.jpg" alt="オフィスで働く人" class="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-700 ease-fluid group-hover:scale-105 group-hover:opacity-70">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5"></div>
+            <div class="relative flex h-full min-h-[480px] flex-col p-7 md:p-9"><span class="font-mono text-[10px] tracking-[.16em] text-brand-100">01 / MEASUREMENT</span><div class="mt-auto"><h3 class="text-3xl font-black">測定事業</h3><p class="mt-4 text-sm leading-7 text-white/65">健康経営、転倒リスク、大会計測。独自技術で人の状態を可視化します。</p><span class="mt-7 inline-flex transition-transform group-hover:translate-x-2">詳しく見る →</span></div></div>
+          </a>
+          <a href="/reaxion/" class="group relative min-h-[480px] overflow-hidden rounded-3xl bg-ink text-white shadow-lift transition duration-700 ease-fluid hover:-translate-y-3 hover:shadow-glow" data-reveal>
+            <img src="/assets/img/athlete.jpg" alt="競技に取り組むアスリート" class="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-700 ease-fluid group-hover:scale-105 group-hover:opacity-70">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5"></div>
+            <div class="relative flex h-full min-h-[480px] flex-col p-7 md:p-9"><span class="font-mono text-[10px] tracking-[.16em] text-brand-100">02 / COGNITIVE MOTOR</span><div class="mt-auto"><h3 class="text-3xl font-black">REAXION</h3><p class="mt-4 text-sm leading-7 text-white/65">見る・判断する・動く。反応する力を測り、鍛えるシステムです。</p><span class="mt-7 inline-flex transition-transform group-hover:translate-x-2">詳しく見る →</span></div></div>
+          </a>
+          <a href="/human-data/" class="group relative min-h-[480px] overflow-hidden rounded-3xl bg-brand-950 text-white shadow-lift transition duration-700 ease-fluid hover:-translate-y-3 hover:shadow-glow" data-reveal>
+            <div class="mesh grid-lines absolute inset-0"></div><div class="absolute right-0 top-0 h-72 w-72 rounded-full bg-brand-500/35 blur-[90px]"></div>
+            <div class="relative flex h-full min-h-[480px] flex-col p-7 md:p-9"><span class="font-mono text-[10px] tracking-[.16em] text-brand-100">03 / DATA & RESEARCH</span><div class="mt-auto"><h3 class="text-3xl font-black">Human Data</h3><p class="mt-4 text-sm leading-7 text-white/65">測定データを蓄積・分析し、組織の意思決定と次の価値につなげます。</p><span class="mt-7 inline-flex transition-transform group-hover:translate-x-2">詳しく見る →</span></div></div>
+          </a>
+        </div>
+        <div class="mt-5 grid gap-5 md:grid-cols-2">
+          <a href="/system/" class="group flex items-center justify-between rounded-2xl border border-black/10 bg-white p-6 shadow-sm transition duration-500 hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-lift md:p-8"><span><small class="font-mono text-[9px] tracking-[.16em] text-brand-500">04 / BUILD</small><b class="mt-2 block text-xl">システム開発・保守</b></span><span class="text-2xl transition-transform group-hover:translate-x-2">→</span></a>
+          <a href="/event/" class="group flex items-center justify-between rounded-2xl border border-black/10 bg-white p-6 shadow-sm transition duration-500 hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-lift md:p-8"><span><small class="font-mono text-[9px] tracking-[.16em] text-brand-500">05 / EXPERIENCE</small><b class="mt-2 block text-xl">イベント支援・コンサル</b></span><span class="text-2xl transition-transform group-hover:translate-x-2">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="approach" class="relative overflow-hidden bg-ink py-24 text-white md:py-40">
+      <div class="mesh grid-lines absolute inset-0 opacity-80"></div>
+      <div class="relative mx-auto grid max-w-7xl gap-14 px-5 md:px-10 lg:grid-cols-[.75fr_1.25fr] lg:gap-28">
+        <div data-reveal><p class="font-mono text-[10px] tracking-[.18em] text-brand-100">OUR APPROACH</p><h2 class="mt-4 text-5xl font-black leading-[1.05] tracking-[-.05em] md:text-7xl">Measure.<br>Analyze.<br><span class="text-brand-400">Improve.</span></h2></div>
+        <div class="border-t border-white/20">
+          <article class="group grid grid-cols-[48px_1fr_auto] gap-5 border-b border-white/15 py-8 transition duration-500 hover:bg-white/[.04] md:px-5" data-reveal><span class="font-mono text-xs text-brand-400">01</span><div><h3 class="text-xl font-bold">人を測る</h3><p class="mt-3 max-w-xl text-sm leading-7 text-white/55">認知機能、身体機能、反応、行動を独自の測定技術で可視化します。</p></div><span class="transition-transform group-hover:translate-x-2">→</span></article>
+          <article class="group grid grid-cols-[48px_1fr_auto] gap-5 border-b border-white/15 py-8 transition duration-500 hover:bg-white/[.04] md:px-5" data-reveal><span class="font-mono text-xs text-brand-400">02</span><div><h3 class="text-xl font-bold">データから理解する</h3><p class="mt-3 max-w-xl text-sm leading-7 text-white/55">クラウド、統計、AIを組み合わせ、個人・集団・経時変化を分析します。</p></div><span class="transition-transform group-hover:translate-x-2">→</span></article>
+          <article class="group grid grid-cols-[48px_1fr_auto] gap-5 border-b border-white/15 py-8 transition duration-500 hover:bg-white/[.04] md:px-5" data-reveal><span class="font-mono text-xs text-brand-400">03</span><div><h3 class="text-xl font-bold">変化につなげる</h3><p class="mt-3 max-w-xl text-sm leading-7 text-white/55">測定結果をトレーニングや行動変容へつなげ、改善を継続します。</p></div><span class="transition-transform group-hover:translate-x-2">→</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="impact" class="overflow-hidden bg-white py-24 md:py-40">
+      <div class="mx-auto max-w-7xl px-5 md:px-10">
+        <div class="mb-16 md:flex md:items-end md:justify-between" data-reveal><div><p class="font-mono text-[10px] tracking-[.18em] text-brand-500">IMPACT</p><h2 class="mt-4 text-4xl font-black tracking-[-.04em] md:text-6xl">積み重ねてきた、測定と現場。</h2></div><p class="mt-6 max-w-sm text-sm leading-7 text-muted md:mt-0">企業・自治体・スポーツの現場で、測定と改善の循環を支えています。</p></div>
+        <div class="grid gap-px overflow-hidden rounded-3xl bg-black/10 md:grid-cols-3" data-reveal>
+          <div class="group bg-paper p-8 transition duration-500 hover:bg-brand-50 md:p-10"><span class="text-[clamp(5rem,10vw,9rem)] font-black leading-none tracking-[-.08em] transition-colors group-hover:text-brand-500">2013</span><p class="mt-5 border-t border-black/15 pt-4 text-sm font-bold">設立</p></div>
+          <div class="group bg-paper p-8 transition duration-500 hover:bg-brand-50 md:p-10"><span class="text-[clamp(5rem,10vw,9rem)] font-black leading-none tracking-[-.08em] transition-colors group-hover:text-brand-500">10<small class="text-xl">年+</small></span><p class="mt-5 border-t border-black/15 pt-4 text-sm font-bold">大会計測・運営実績</p></div>
+          <div class="group bg-paper p-8 transition duration-500 hover:bg-brand-50 md:p-10"><span class="text-[clamp(5rem,10vw,9rem)] font-black leading-none tracking-[-.08em] transition-colors group-hover:text-brand-500">5</span><p class="mt-5 border-t border-black/15 pt-4 text-sm font-bold">事業ドメイン</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="relative overflow-hidden bg-brand-500 px-5 py-24 text-white md:px-10 md:py-36">
+      <div class="grid-lines absolute inset-0 opacity-20"></div><div class="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-violet-400/40 blur-[100px]"></div>
+      <div class="relative mx-auto flex max-w-7xl flex-col gap-10 md:flex-row md:items-end md:justify-between" data-reveal>
+        <div><p class="font-mono text-[10px] tracking-[.18em] text-white/65">START A CONVERSATION</p><h2 class="mt-5 max-w-4xl text-balance text-[clamp(2.8rem,7vw,7rem)] font-black leading-[1.02] tracking-[-.055em]">人の可能性を、<br>一緒にひらく。</h2></div>
+        <a href="mailto:info@smasta.co.jp?subject=SMARTSTART%20Web%E3%82%B5%E3%82%A4%E3%83%88%E3%81%8B%E3%82%89%E3%81%AE%E3%81%94%E7%9B%B8%E8%AB%87" class="group inline-flex min-h-14 shrink-0 items-center justify-between gap-10 rounded-full bg-white px-7 font-bold text-ink shadow-glow transition duration-500 hover:-translate-y-2 hover:shadow-2xl">導入について相談する <span class="transition-transform group-hover:translate-x-2">→</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-ink px-5 py-16 text-white md:px-10 md:py-24">
+    <div class="mx-auto max-w-7xl">
+      <div class="grid gap-12 border-b border-white/15 pb-14 md:grid-cols-2 lg:grid-cols-4">
+        <div class="lg:col-span-2"><p class="text-2xl font-black">SMARTSTART</p><p class="mt-4 max-w-md text-sm leading-7 text-white/45">人を測る。データでわかる。未来を変える。</p></div>
+        <div><p class="font-mono text-[10px] tracking-[.16em] text-white/35">BUSINESS</p><div class="mt-5 space-y-3 text-sm text-white/65"><a class="block hover:text-white" href="/measurement/">測定事業</a><a class="block hover:text-white" href="/reaxion/">REAXION</a><a class="block hover:text-white" href="/human-data/">Human Data</a></div></div>
+        <div><p class="font-mono text-[10px] tracking-[.16em] text-white/35">CONTACT</p><div class="mt-5 space-y-3 text-sm text-white/65"><a class="block hover:text-white" href="tel:0335569988">03-3556-9988</a><a class="block hover:text-white" href="mailto:info@smasta.co.jp">info@smasta.co.jp</a><p>東京都千代田区六番町1-1</p></div></div>
+      </div>
+      <div class="flex flex-col gap-3 pt-7 font-mono text-[10px] text-white/30 sm:flex-row sm:justify-between"><span>© SMARTSTART INC.</span><a class="hover:text-white" href="/privacy-policy/">PRIVACY POLICY</a></div>
+    </div>
+  </footer>
+
+  <script>
+    const button = document.getElementById('menuButton');
+    const menu = document.getElementById('mobileMenu');
+    button.addEventListener('click', () => {
+      const open = !menu.classList.contains('hidden');
+      menu.classList.toggle('hidden', open);
+      button.setAttribute('aria-expanded', String(!open));
+      button.textContent = open ? 'MENU' : 'CLOSE';
+      document.body.classList.toggle('overflow-hidden', !open);
+    });
+    menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+      menu.classList.add('hidden'); button.setAttribute('aria-expanded','false'); button.textContent='MENU'; document.body.classList.remove('overflow-hidden');
+    }));
+    const progress = document.getElementById('progress');
+    addEventListener('scroll', () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      progress.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+    }, {passive:true});
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reveal = document.querySelectorAll('[data-reveal]');
+    if (reduced || !('IntersectionObserver' in window)) reveal.forEach(el => el.classList.add('is-visible'));
+    else {
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+        if(entry.isIntersecting){ entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
+      }), {threshold:.12, rootMargin:'0px 0px -6% 0px'});
+      reveal.forEach(el => observer.observe(el));
+    }
+  </script>
+</body>
+</html>
