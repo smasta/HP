@@ -245,7 +245,11 @@
     "relatedServices": [
       "reaxion/care",
       "measurement/fall-risk"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/reaxion-voice-poc.webp",
+      "alt": "同心円とゲージをモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "reaxion-care-tais",
@@ -560,7 +564,11 @@
     "relatedServices": [
       "reaxion/care",
       "measurement/fall-risk"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/reaxion-care-tais.webp",
+      "alt": "六角形の階層をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "reaxion-safety-measurement",
@@ -967,7 +975,11 @@
       "measurement/reaxion-well",
       "measurement/fall-risk",
       "reaxion/pro"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/reaction-ability-measurement.webp",
+      "alt": "反応の波形をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "reaxion-care-release",
@@ -1184,7 +1196,11 @@
     "relatedServices": [
       "reaxion/care",
       "measurement/fall-risk"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/reaxion-care-release.webp",
+      "alt": "同心円とゲージをモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "reaxionwellpr",
@@ -1498,7 +1514,11 @@
     "seoTitle": "企業向け「REAXION Well」提供開始｜健康経営",
     "relatedServices": [
       "measurement/reaxion-well"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/reaxionwellpr.webp",
+      "alt": "棒グラフと推移線をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "20250425",
@@ -1736,7 +1756,11 @@
     "seoTitle": "DX×AIで認知症予防と介護施設の収益向上を実現",
     "relatedServices": [
       "reaxion/care"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/20250425.webp",
+      "alt": "散布図と回帰線をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "nankatsu-sc-partnership",
@@ -1866,7 +1890,11 @@
     "seoTitle": "REAXIONが南葛SCとパートナー契約を締結",
     "relatedServices": [
       "reaxion/pro"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/nankatsu-sc-partnership.webp",
+      "alt": "反応の波形をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "tokyo-esports-festa-2024",
@@ -1928,7 +1956,11 @@
     "seoTitle": "TOKYO eスポーツフェスタ 2024 出展のお知らせ",
     "relatedServices": [
       "event/produce"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/tokyo-esports-festa-2024.webp",
+      "alt": "放射する線をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "toretopi",
@@ -1955,7 +1987,11 @@
     "sourceUrl": "https://smasta.co.jp/2023/10/20/toretopi/",
     "path": "/news/toretopi/",
     "legacySlug": "toretopi",
-    "relatedServices": []
+    "relatedServices": [],
+    "cover": {
+      "src": "/images/news/covers/toretopi.webp",
+      "alt": "節点と接続線をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "k-journal",
@@ -1982,7 +2018,11 @@
     "sourceUrl": "https://smasta.co.jp/2023/10/20/k-journal/",
     "path": "/news/k-journal/",
     "legacySlug": "k-journal",
-    "relatedServices": []
+    "relatedServices": [],
+    "cover": {
+      "src": "/images/news/covers/k-journal.webp",
+      "alt": "節点と接続線をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "japan-sports-vision-association",
@@ -2011,7 +2051,11 @@
     "legacySlug": "%e3%82%b9%e3%83%9d%e3%83%bc%e3%83%84%e3%83%93%e3%82%b8%e3%83%a7%e3%83%b3%e5%8d%94%e4%bc%9a%e3%81%ab%e5%8a%a0%e7%9b%9f%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%e3%80%82",
     "relatedServices": [
       "reaxion/pro"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/japan-sports-vision-association.webp",
+      "alt": "同心円とゲージをモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "sports-in-life",
@@ -2038,7 +2082,11 @@
     "sourceUrl": "https://smasta.co.jp/2023/10/04/%e3%82%b9%e3%83%9d%e3%83%bc%e3%83%84%e5%ba%81%e3%80%8csports-in-life%e3%80%8d%e3%81%ab%e5%8a%a0%e7%9b%9f%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%e3%80%82/",
     "path": "/news/sports-in-life/",
     "legacySlug": "%e3%82%b9%e3%83%9d%e3%83%bc%e3%83%84%e5%ba%81%e3%80%8csports-in-life%e3%80%8d%e3%81%ab%e5%8a%a0%e7%9b%9f%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%e3%80%82",
-    "relatedServices": []
+    "relatedServices": [],
+    "cover": {
+      "src": "/images/news/covers/sports-in-life.webp",
+      "alt": "六角形の階層をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "reaxion-challenge",
@@ -2189,7 +2237,11 @@
     "relatedServices": [
       "event/produce",
       "measurement/smart-timing"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/reaxion-challenge.webp",
+      "alt": "放射する線をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "privacy-mark",
@@ -2216,7 +2268,11 @@
     "sourceUrl": "https://smasta.co.jp/2023/08/07/p%e3%83%9e%e3%83%bc%e3%82%af%e3%82%92%e5%8f%96%e5%be%97%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%e3%80%82/",
     "path": "/news/privacy-mark/",
     "legacySlug": "p%e3%83%9e%e3%83%bc%e3%82%af%e3%82%92%e5%8f%96%e5%be%97%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%e3%80%82",
-    "relatedServices": []
+    "relatedServices": [],
+    "cover": {
+      "src": "/images/news/covers/privacy-mark.webp",
+      "alt": "六角形の階層をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "20221221",
@@ -2439,7 +2495,11 @@
       "reaxion/development",
       "reaxion/kids"
     ],
-    "seoTitle": "REAXIONシリーズ第3弾「X-BALL」新登場"
+    "seoTitle": "REAXIONシリーズ第3弾「X-BALL」新登場",
+    "cover": {
+      "src": "/images/news/covers/20221221.webp",
+      "alt": "棒グラフと推移線をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "20221215",
@@ -2641,7 +2701,11 @@
     "relatedServices": [
       "reaxion/pro"
     ],
-    "seoTitle": "ビジョントレーニング用ストロボグラスを発売"
+    "seoTitle": "ビジョントレーニング用ストロボグラスを発売",
+    "cover": {
+      "src": "/images/news/covers/20221215.webp",
+      "alt": "反応の波形をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "20221201",
@@ -2795,7 +2859,11 @@
     "seoTitle": "ビジョントレーニングメソッドと提携しました",
     "relatedServices": [
       "reaxion/pro"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/20221201.webp",
+      "alt": "節点と接続線をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "20221121",
@@ -2998,7 +3066,11 @@
     "relatedServices": [
       "reaxion/pro",
       "reaxion/kids"
-    ]
+    ],
+    "cover": {
+      "src": "/images/news/covers/20221121.webp",
+      "alt": "広がる同心の弧をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "website-update-2022",
@@ -3017,7 +3089,11 @@
     "sourceUrl": "https://smasta.co.jp/2022/06/14/%e3%83%9b%e3%83%bc%e3%83%a0%e3%83%9a%e3%83%bc%e3%82%b8%e3%82%92%e6%9b%b4%e6%96%b0%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%e3%80%82/",
     "path": "/news/website-update-2022/",
     "legacySlug": "%e3%83%9b%e3%83%bc%e3%83%a0%e3%83%9a%e3%83%bc%e3%82%b8%e3%82%92%e6%9b%b4%e6%96%b0%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%e3%80%82",
-    "relatedServices": []
+    "relatedServices": [],
+    "cover": {
+      "src": "/images/news/covers/website-update-2022.webp",
+      "alt": "節点と接続線をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "10th-fiscal-year",
@@ -3036,7 +3112,11 @@
     "sourceUrl": "https://smasta.co.jp/2022/02/01/%e7%ac%ac10%e6%9c%9f%e3%81%8c%e5%a7%8b%e3%81%be%e3%82%8a%e3%81%be%e3%81%97%e3%81%9f%ef%bc%81/",
     "path": "/news/10th-fiscal-year/",
     "legacySlug": "%e7%ac%ac10%e6%9c%9f%e3%81%8c%e5%a7%8b%e3%81%be%e3%82%8a%e3%81%be%e3%81%97%e3%81%9f%ef%bc%81",
-    "relatedServices": []
+    "relatedServices": [],
+    "cover": {
+      "src": "/images/news/covers/10th-fiscal-year.webp",
+      "alt": "階段状の積み上げをモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "poolno-release",
@@ -3296,7 +3376,11 @@
     "path": "/news/poolno-release/",
     "legacySlug": "%e6%96%b0%e3%83%97%e3%83%bc%e3%83%ab%e3%82%a8%e3%82%af%e3%82%b5%e3%82%b5%e3%82%a4%e3%82%ba%e3%82%ae%e3%82%a2%e3%80%8cpoolno%e3%80%8d%e3%81%ae%e7%99%ba%e5%a3%b2%e3%82%92%e9%96%8b%e5%a7%8b%e3%81%97",
     "seoTitle": "プールエクササイズギア「Poolno」発売開始",
-    "relatedServices": []
+    "relatedServices": [],
+    "cover": {
+      "src": "/images/news/covers/poolno-release.webp",
+      "alt": "広がる同心の弧をモチーフにしたキービジュアル"
+    }
   },
   {
     "slug": "business-started",
@@ -3315,6 +3399,10 @@
     "sourceUrl": "https://smasta.co.jp/2013/02/14/%e6%a0%aa%e5%bc%8f%e4%bc%9a%e7%a4%be%e3%82%b9%e3%83%9e%e3%83%bc%e3%83%88%e3%82%b9%e3%82%bf%e3%83%bc%e3%83%88%e4%ba%8b%e6%a5%ad%e9%96%8b%e5%a7%8b%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%e3%80%82/",
     "path": "/news/business-started/",
     "legacySlug": "%e6%a0%aa%e5%bc%8f%e4%bc%9a%e7%a4%be%e3%82%b9%e3%83%9e%e3%83%bc%e3%83%88%e3%82%b9%e3%82%bf%e3%83%bc%e3%83%88%e4%ba%8b%e6%a5%ad%e9%96%8b%e5%a7%8b%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%e3%80%82",
-    "relatedServices": []
+    "relatedServices": [],
+    "cover": {
+      "src": "/images/news/covers/business-started.webp",
+      "alt": "階段状の積み上げをモチーフにしたキービジュアル"
+    }
   }
 ]
