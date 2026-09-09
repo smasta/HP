@@ -1,4 +1,7 @@
+import type { CSSProperties } from "react";
+import CountUp from "./CountUp";
 import SectionHead from "./SectionHead";
+import SplitText from "./SplitText";
 import { coreModel } from "@/lib/content";
 
 const cohorts = [
@@ -13,7 +16,7 @@ export default function DataSection() {
       <div className="mx-auto max-w-[1560px] px-5 md:px-8 lg:px-10">
         <SectionHead en="Data" ja="コアモデルと分析" tone="paper" />
 
-        <div className="mt-14 grid gap-14 lg:grid-cols-12 lg:gap-16 md:mt-20">
+        <div className="mt-14 grid items-start gap-14 lg:grid-cols-12 lg:gap-16 md:mt-20">
           {/* 左：コアモデルの番号リスト */}
           <div className="lg:col-span-6">
             <p
@@ -27,8 +30,8 @@ export default function DataSection() {
               {coreModel.map((phase, index) => (
                 <li
                   key={phase.en}
-                  data-reveal
-                  style={{ "--reveal-delay": `${index * 110}ms` } as React.CSSProperties}
+                  data-reveal="left"
+                  style={{ "--reveal-delay": `${index * 110}ms` } as CSSProperties}
                   className="border-t border-white/12 py-7 last:border-b"
                 >
                   <div className="flex items-baseline gap-4">
@@ -71,18 +74,20 @@ export default function DataSection() {
           </div>
 
           {/* 右：Human Data */}
-          <div id="human-data" className="lg:col-span-6">
+          <div id="human-data" className="lg:sticky lg:top-28 lg:col-span-6">
             <div
-              data-reveal
-              style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+              data-reveal="scale"
+              style={{ "--reveal-delay": "120ms" } as CSSProperties}
               className="glass rounded-[26px] p-6 md:p-9"
             >
               <p className="eyebrow text-mist-500">Human Data</p>
-              <h3 className="display-jp mt-4 text-[1.2rem] leading-[1.65] text-white md:text-[1.6rem]">
-                人の状態を、
-                <br />
-                ひとつの数字で終わらせない。
-              </h3>
+              <SplitText
+                as="h3"
+                delay={180}
+                stagger={28}
+                text={"人の状態を、\nひとつの数字で終わらせない。"}
+                className="display-jp mt-4 text-[1.2rem] leading-[1.65] text-white md:text-[1.6rem]"
+              />
               <p className="mt-5 text-[0.88rem] leading-[2] text-mist-300">
                 SMARTSTARTは一度だけの測定結果を提供するのではなく、認知と身体が連動する状態を継続的に測定・分析し、トレーニングや行動変容へつなげます。
               </p>
@@ -164,7 +169,7 @@ export default function DataSection() {
                   <div key={cohort.label}>
                     <dt className="text-[0.68rem] text-mist-500">{cohort.label}</dt>
                     <dd className="num mt-1.5 text-[1.5rem] text-white md:text-[1.8rem]">
-                      {cohort.value}
+                      <CountUp value={cohort.value} duration={1500} />
                       <span className="ml-1.5 text-[0.52rem] tracking-[0.16em] text-mist-500">
                         {cohort.unit}
                       </span>

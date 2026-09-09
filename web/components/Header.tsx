@@ -22,7 +22,14 @@ export default function Header({ solidFromTop = false }: { solidFromTop?: boolea
       setSolid(true);
       return;
     }
-    const onScroll = () => setSolid(window.scrollY > window.innerHeight * 0.72);
+    // ヒーローをピン留めしている間は透明のまま。舞台を抜けてから白に切り替える
+    const stage = document.querySelector<HTMLElement>("[data-pin-stage]");
+    const onScroll = () => {
+      const threshold = stage
+        ? stage.offsetTop + stage.offsetHeight - window.innerHeight * 0.3
+        : window.innerHeight * 0.72;
+      setSolid(window.scrollY > threshold);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -152,6 +159,17 @@ export default function Header({ solidFromTop = false }: { solidFromTop?: boolea
               </span>
             </button>
           </div>
+        </div>
+
+        {/* 読み進み具合を示す一本線 */}
+        <div
+          aria-hidden="true"
+          className={[
+            "absolute inset-x-0 bottom-0 h-[2px] origin-left transition-opacity duration-500",
+            light ? "opacity-100" : "opacity-0",
+          ].join(" ")}
+        >
+          <span className="scroll-progress block h-full w-full bg-gradient-to-r from-indigo-glow to-emerald-glow" />
         </div>
       </header>
 

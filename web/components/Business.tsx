@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import SectionHead from "./SectionHead";
 import { businesses, photos } from "@/lib/content";
 
@@ -10,7 +11,7 @@ export default function Business() {
 
         <p
           data-reveal
-          style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+          style={{ "--reveal-delay": "120ms" } as CSSProperties}
           className="mt-10 max-w-2xl text-[0.92rem] leading-[2.05] text-graphite-600"
         >
           測定・REAXION・Human Data・システム開発・イベント支援。5つの事業はそれぞれ独立しながら、ひとつのデータの流れでつながっています。
@@ -20,14 +21,16 @@ export default function Business() {
           {businesses.map((business, index) => (
             <li
               key={business.id}
-              data-reveal
-              style={{ "--reveal-delay": `${(index % 3) * 80}ms` } as React.CSSProperties}
+              data-reveal={index % 2 === 0 ? "left" : "right"}
+              style={
+                { "--reveal-delay": `${(index % 3) * 80}ms`, "--clip-delay": "180ms" } as CSSProperties
+              }
               className="border-t border-black/10 py-10 last:border-b md:py-14"
             >
               <div className="grid gap-8 md:grid-cols-[248px_1fr] md:gap-12 lg:gap-20">
                 {/* 事業マーク */}
                 <div className="flex items-start">
-                  <div className="group relative aspect-[16/10] w-full max-w-[280px] overflow-hidden rounded-2xl bg-ink">
+                  <div className="clip-reveal group relative aspect-[16/10] w-full max-w-[280px] overflow-hidden rounded-2xl bg-ink">
                     <Image
                       src={photos[business.photo].src}
                       alt={photos[business.photo].alt}

@@ -422,3 +422,175 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .stat-num { color: var(--color-ink); transform: none; }
 }
+
+/* ==================================================================== */
+/*  Motion v2 — 1文字ずつの立ち上がり／写真のワイプ／ピン留め／視差       */
+/* ==================================================================== */
+
+/* ---------------- 文字単位のリビール（SplitText が使用） -------------- */
+.split-parent {
+  display: block;
+  overflow: hidden;
+  /* 字面が行送りを超えるぶんを余白で逃がし、上下の切れを防ぐ */
+  padding-top: 0.18em;
+  padding-bottom: 0.18em;
+  margin-top: -0.18em;
+  margin-bottom: -0.18em;
+}
+
+.split-char {
+  display: inline-block;
+  opacity: 0;
+  /* display-en の line-height 0.94 でも文字が顔を出さない沈み量 */
+  transform: translate3d(0, 1.15em, 0);
+  transition:
+    opacity 0.7s var(--ease-silk),
+    transform 0.95s var(--ease-silk);
+  transition-delay: var(--char-delay, 0ms);
+}
+
+.is-revealed .split-char,
+[data-reveal].is-revealed .split-char {
+  opacity: 1;
+  transform: none;
+}
+
+/* 文字が個別に動くので、親のフェードアップは打ち消す */
+[data-reveal="chars"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------ 方向つきリビール --------------------------- */
+[data-reveal="left"] {
+  transform: translate3d(-46px, 0, 0);
+}
+[data-reveal="right"] {
+  transform: translate3d(46px, 0, 0);
+}
+[data-reveal="scale"] {
+  transform: scale(0.93);
+}
+[data-reveal="blur"] {
+  filter: blur(14px);
+  transition:
+    opacity 1s var(--ease-silk),
+    transform 1s var(--ease-silk),
+    filter 1.3s var(--ease-silk);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal].is-revealed {
+  filter: none;
+}
+
+/* --------------------- 写真がワイプで開くリビール --------------------- */
+.clip-reveal {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1.15s var(--ease-silk);
+  transition-delay: var(--clip-delay, 0ms);
+}
+.clip-reveal--x {
+  clip-path: inset(0 100% 0 0);
+}
+.is-revealed .clip-reveal,
+.clip-reveal.is-revealed {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ------------------------ 罫線が左から伸びる -------------------------- */
+.rule-draw {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.05s var(--ease-silk);
+  transition-delay: var(--rule-delay, 320ms);
+}
+.is-revealed .rule-draw,
+.rule-draw.is-revealed {
+  transform: scaleX(1);
+}
+
+/* ---------------------------- 視差スクロール -------------------------- */
+[data-parallax] {
+  will-change: transform;
+}
+
+/* ------------------------ ヒーローのピン留め -------------------------- */
+.pin-stage {
+  position: relative;
+  height: auto;
+}
+/* 画面が低いとヒーローの中身が 100svh に収まらないため、
+   縦に余裕のある画面でだけ舞台を伸ばしてピン留めを効かせる */
+@media (min-width: 768px) and (min-height: 800px) {
+  .pin-stage {
+    height: 150svh;
+  }
+}
+.pin-inner {
+  position: sticky;
+  top: 0;
+}
+
+/* ピン中の進行度 (--pin-progress) に応じて手前の要素を送り出す */
+[data-pin-fade] {
+  opacity: max(0, calc(1 - var(--pin-progress, 0) * 1.5));
+  transform: translate3d(0, calc(var(--pin-progress, 0) * -72px), 0)
+    scale(calc(1 - var(--pin-progress, 0) * 0.05));
+}
+[data-pin-zoom] {
+  transform: scale(calc(1 + var(--pin-progress, 0) * 0.09));
+}
+
+/* --------------------------- スクロール進捗 --------------------------- */
+.scroll-progress {
+  transform-origin: 0 50%;
+  transform: scaleX(var(--scroll-progress, 0));
+}
+
+/* ------------------------- ホバーの持ち上がり ------------------------- */
+.lift {
+  transition:
+    transform 0.45s var(--ease-silk),
+    box-shadow 0.45s var(--ease-silk);
+}
+.lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 60px -34px rgba(15, 23, 42, 0.55);
+}
+
+/* -------------------------- 逆走するマーキー -------------------------- */
+.marquee__track--reverse {
+  animation-direction: reverse;
+}
+
+/* --------------------- Motion v2 の低モーション対応 ------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .split-char {
+    opacity: 1;
+    transform: none;
+  }
+  .clip-reveal,
+  .clip-reveal--x {
+    clip-path: none;
+  }
+  [data-parallax] {
+    transform: none !important;
+  }
+  [data-pin-fade],
+  [data-pin-zoom] {
+    opacity: 1;
+    transform: none;
+  }
+  .pin-stage {
+    height: auto !important;
+  }
+  .pin-inner {
+    position: relative;
+  }
+  .lift:hover {
+    transform: none;
+  }
+  .rule-draw {
+    transform: none;
+  }
+}

@@ -58,7 +58,7 @@ export default function HeroSlider() {
   return (
     <>
       {/* ---------------------------------------------------- 写真レイヤー */}
-      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+      <div data-pin-zoom className="absolute inset-0 overflow-hidden" aria-hidden="true">
         {slides.map((slide, slideIndex) => {
           const photo = photos[slide.photo];
           const isActive = slideIndex === index;
@@ -108,7 +108,7 @@ export default function HeroSlider() {
       </div>
 
       {/* ------------------------------------------------------ HUD / 操作 */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20">
+      <div data-pin-fade className="pointer-events-none absolute inset-x-0 bottom-0 z-20">
         <div className="mx-auto flex max-w-[1560px] flex-col gap-6 px-5 pb-8 md:flex-row md:items-end md:justify-between md:px-8 md:pb-10 lg:px-10">
           {/* 現在のスライド情報 */}
           <div

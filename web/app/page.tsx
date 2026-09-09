@@ -11,12 +11,14 @@ import Recruit from "@/components/Recruit";
 import Contact from "@/components/Contact";
 import Store from "@/components/Store";
 import Footer from "@/components/Footer";
+import ScrollMotion from "@/components/ScrollMotion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 export default function Home() {
   return (
     <>
       <ScrollReveal />
+      <ScrollMotion />
       <Header />
       <main id="main">
         <Hero />

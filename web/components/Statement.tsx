@@ -1,4 +1,6 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
+import SplitText from "./SplitText";
 import { photos, values } from "@/lib/content";
 
 export default function Statement() {
@@ -8,14 +10,20 @@ export default function Statement() {
       className="on-ink relative overflow-hidden bg-ink py-28 md:py-44"
     >
       {/* 背景：実写＋測定データの層 */}
-      <div className="absolute inset-0" aria-hidden="true">
-        <Image
-          src={photos.athlete.src}
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover object-[50%_28%]"
-        />
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+        {/* 写真だけをゆっくり逆走させ、文字との間に奥行きを出す */}
+        <div
+          data-parallax="0.085"
+          className="absolute inset-x-0 -bottom-[14%] -top-[14%]"
+        >
+          <Image
+            src={photos.athlete.src}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover object-[50%_28%]"
+          />
+        </div>
         <div className="absolute inset-0 bg-ink/45" />
         <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/92 to-ink/25" />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/95 via-transparent to-ink" />
@@ -62,33 +70,24 @@ export default function Statement() {
 
       <div className="relative mx-auto max-w-[1560px] px-5 md:px-8 lg:px-10">
         <div className="max-w-4xl">
-          <p
-            data-reveal
+          <SplitText
+            as="p"
+            text="見えなかった「人」を、データにする。"
+            stagger={30}
             className="display-jp text-[0.9rem] tracking-[0.16em] text-emerald-glow md:text-[1rem]"
-          >
-            見えなかった「人」を、データにする。
-          </p>
+          />
 
-          <h2
-            data-reveal
-            style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
-            className="display-en mt-6 text-white"
-          >
-            <span className="line-mask text-[2.6rem] sm:text-[4rem] md:text-[5.4rem] lg:text-[6.4rem]">
-              <span style={{ "--line-delay": "120ms" } as React.CSSProperties}>
-                Measure People
-              </span>
-            </span>
-            <span className="line-mask text-[2.6rem] sm:text-[4rem] md:text-[5.4rem] lg:text-[6.4rem]">
-              <span style={{ "--line-delay": "260ms" } as React.CSSProperties}>
-                Change Future
-              </span>
-            </span>
-          </h2>
+          <SplitText
+            as="h2"
+            text={"Measure People\nChange Future"}
+            delay={120}
+            stagger={40}
+            className="display-en mt-6 text-[2.6rem] text-white sm:text-[4rem] md:text-[5.4rem] lg:text-[6.4rem]"
+          />
 
           <div
             data-reveal
-            style={{ "--reveal-delay": "220ms" } as React.CSSProperties}
+            style={{ "--reveal-delay": "220ms" } as CSSProperties}
             className="mt-12 max-w-2xl space-y-7 text-[0.92rem] leading-[2.1] text-white/75 md:mt-16 md:text-[0.98rem]"
           >
             <p>
@@ -110,7 +109,7 @@ export default function Statement() {
 
           <dl
             data-reveal
-            style={{ "--reveal-delay": "320ms" } as React.CSSProperties}
+            style={{ "--reveal-delay": "320ms" } as CSSProperties}
             className="mt-14 grid gap-8 border-t border-white/12 pt-10 sm:grid-cols-2"
           >
             <div>
@@ -132,8 +131,8 @@ export default function Statement() {
           {values.map((value, index) => (
             <li
               key={value.en}
-              data-reveal
-              style={{ "--reveal-delay": `${index * 90}ms` } as React.CSSProperties}
+              data-reveal="left"
+              style={{ "--reveal-delay": `${index * 90}ms` } as CSSProperties}
               className="group bg-ink px-6 py-8 transition-colors duration-300 hover:bg-white/[0.05]"
             >
               <span className="num text-[0.68rem] text-mist-500">

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import SectionHead from "./SectionHead";
 import { audiences, photos } from "@/lib/content";
 
@@ -10,7 +11,7 @@ export default function Audience() {
           <SectionHead en="For You" ja="対象者別の入口" />
           <p
             data-reveal
-            style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+            style={{ "--reveal-delay": "120ms" } as CSSProperties}
             className="max-w-md text-[0.9rem] leading-[2.05] text-graphite-600"
           >
             企業、自治体・介護、スポーツ、教育・発達支援、大会運営。立場によって、測るべきものは異なります。
@@ -21,14 +22,19 @@ export default function Audience() {
           {audiences.map((audience, index) => (
             <li
               key={audience.id}
-              data-reveal
-              style={{ "--reveal-delay": `${index * 80}ms` } as React.CSSProperties}
+              data-reveal="scale"
+              style={
+                {
+                  "--reveal-delay": `${index * 80}ms`,
+                  "--clip-delay": `${index * 80 + 120}ms`,
+                } as CSSProperties
+              }
             >
               <a
                 href={audience.href}
                 className="group flex h-full flex-col bg-white transition-colors duration-300 hover:bg-paper"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="clip-reveal relative aspect-[4/3] overflow-hidden">
                   <Image
                     src={photos[audience.photo].src}
                     alt={photos[audience.photo].alt}

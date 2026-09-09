@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import SectionHead from "./SectionHead";
 import { latestNews, photos } from "@/lib/content";
 
@@ -10,7 +11,7 @@ export default function News() {
           <SectionHead en="Topics" ja="新着情報" />
           <a
             data-reveal
-            style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+            style={{ "--reveal-delay": "120ms" } as CSSProperties}
             href="/news/"
             className="group inline-flex items-center gap-2.5 text-[0.82rem] text-ink transition-colors duration-300 hover:text-graphite-600"
           >
@@ -29,11 +30,16 @@ export default function News() {
             return (
               <li
                 key={item.title}
-                data-reveal
-                style={{ "--reveal-delay": `${index * 110}ms` } as React.CSSProperties}
+                data-reveal="scale"
+                style={
+                  {
+                    "--reveal-delay": `${index * 110}ms`,
+                    "--clip-delay": `${index * 110 + 140}ms`,
+                  } as CSSProperties
+                }
               >
                 <a href={item.path} className="group block">
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-ink">
+                  <div className="clip-reveal relative aspect-[16/10] overflow-hidden rounded-xl bg-ink">
                     <Image
                       src={item.cover?.src ?? photos[item.photo].src}
                       alt={item.cover?.alt ?? photos[item.photo].alt}
