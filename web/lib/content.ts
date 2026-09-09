@@ -242,6 +242,7 @@ export const navItems: NavItem[] = [
   { label: "Human Data", en: "HUMAN DATA", href: "#human-data", path: "/human-data/" },
   { label: "システム開発・保守", en: "SYSTEM", href: "#business", path: "/system/" },
   { label: "イベント支援・コンサル", en: "EVENT", href: "#business", path: "/event/" },
+  { label: "プロダクトサイト", en: "PRODUCTS", href: "#products", path: "/#products" },
   { label: "導入実績・事例", en: "CASE STUDIES", href: "#proof", path: "/case-studies/" },
   { label: "私たちについて", en: "ABOUT", href: "#mission", path: "/about/" },
   { label: "新着情報", en: "NEWS", href: "#news", path: "/news/" },
