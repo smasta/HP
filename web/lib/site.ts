@@ -23,6 +23,8 @@ export type Service = {
   scope: { step: string; title: string; body: string }[];
   related: string[];
   photo: PhotoKey;
+  /** 写真の代わりに使うキービジュアル（scripts/generate-page-covers.py で生成） */
+  cover?: { src: string; alt: string };
   seo: { title: string; description: string };
 };
 
@@ -485,6 +487,10 @@ export const services: Service[] = [
     ],
     related: ["maintenance", "ses"],
     photo: "office",
+    cover: {
+      src: "/images/covers/system-development.webp",
+      alt: "節点と接続線をモチーフにしたキービジュアル",
+    },
     seo: {
       title: "システム開発｜受託開発",
       description:
@@ -524,6 +530,10 @@ export const services: Service[] = [
     ],
     related: ["development", "ses"],
     photo: "office",
+    cover: {
+      src: "/images/covers/system-maintenance.webp",
+      alt: "反応の波形をモチーフにしたキービジュアル",
+    },
     seo: {
       title: "システム保守｜運用・保守",
       description:
@@ -563,6 +573,10 @@ export const services: Service[] = [
     ],
     related: ["development", "maintenance"],
     photo: "office",
+    cover: {
+      src: "/images/covers/system-ses.webp",
+      alt: "六角形の階層をモチーフにしたキービジュアル",
+    },
     seo: {
       title: "Smart SES｜エンジニアリング支援",
       description:
@@ -644,7 +658,7 @@ export const services: Service[] = [
       { step: "05", title: "振り返り", body: "実施後に報告をまとめ、次回に引き継ぎます。" },
     ],
     related: ["produce", "smart-timing"],
-    photo: "marathon",
+    photo: "athlete",
     seo: {
       title: "大会運営コンサル・事務局代行",
       description:
@@ -693,6 +707,8 @@ export type CaseStudy = {
   quote?: { body: string; author: string };
   related: string[];
   photo: PhotoKey;
+  /** 写真の代わりに使うキービジュアル（scripts/generate-page-covers.py で生成） */
+  cover?: { src: string; alt: string };
   /** 根拠となる新着情報ページ */
   source?: { label: string; path: string };
   /** 外部リンク（導入先の公式サイト等） */
@@ -726,6 +742,10 @@ export const caseStudies: CaseStudy[] = [
     ],
     related: ["care", "fall-risk"],
     photo: "senior",
+    cover: {
+      src: "/images/covers/case-balena-reaxion-voice.webp",
+      alt: "同心円とゲージをモチーフにしたキービジュアル",
+    },
     source: {
       label: "介護施設向け「REAXION VOICE」のPoCを開始",
       path: "/news/reaxion-voice-poc/",
@@ -763,6 +783,10 @@ export const caseStudies: CaseStudy[] = [
     },
     related: ["care", "fall-risk"],
     photo: "senior",
+    cover: {
+      src: "/images/covers/case-reaxion-care-facilities.webp",
+      alt: "広がる同心の弧をモチーフにしたキービジュアル",
+    },
     source: {
       label: "「REAXION CARE」2026年3月26日より正式提供開始",
       path: "/news/reaxion-care-release/",
@@ -789,6 +813,10 @@ export const caseStudies: CaseStudy[] = [
     ],
     related: ["pro"],
     photo: "athlete",
+    cover: {
+      src: "/images/covers/case-nankatsu-sc.webp",
+      alt: "反応の波形をモチーフにしたキービジュアル",
+    },
     source: {
       label: "REAXION®︎がサッカークラブ「南葛SC」とパートナー契約を締結",
       path: "/news/nankatsu-sc-partnership/",

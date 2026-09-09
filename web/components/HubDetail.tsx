@@ -53,7 +53,7 @@ export default function HubDetail({ hub }: { hub: Hub }) {
                     aria-hidden="true"
                   >
                     <Image
-                      src={photos[service.photo].src}
+                      src={service.cover?.src ?? photos[service.photo].src}
                       alt=""
                       fill
                       sizes="(max-width: 768px) 100vw, 300px"

@@ -58,6 +58,7 @@ export default function ServiceDetail({ service }: { service: Service }) {
         title={service.name}
         lead={service.lead}
         photo={service.photo}
+        image={service.cover}
         crumbs={[
           { label: hub?.name ?? "", href: `/${service.hub}/` },
           { label: service.name },

@@ -46,8 +46,8 @@ export default function Page() {
                 >
                   <div className="relative aspect-[16/10] overflow-hidden bg-ink">
                     <Image
-                      src={photos[item.photo].src}
-                      alt={photos[item.photo].alt}
+                      src={item.cover?.src ?? photos[item.photo].src}
+                      alt={item.cover?.alt ?? photos[item.photo].alt}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.07]"

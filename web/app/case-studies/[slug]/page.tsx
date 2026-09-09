@@ -54,6 +54,7 @@ export default async function Page({ params }: Params) {
         title={item.client}
         lead={item.summary}
         photo={item.photo}
+        image={item.cover}
         crumbs={[
           { label: "導入実績・事例", href: "/case-studies/" },
           { label: item.client },
