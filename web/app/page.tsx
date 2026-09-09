@@ -5,6 +5,7 @@ import Audience from "@/components/Audience";
 import Statement from "@/components/Statement";
 import Business from "@/components/Business";
 import DataSection from "@/components/DataSection";
+import Products from "@/components/Products";
 import Project from "@/components/Project";
 import News from "@/components/News";
 import Recruit from "@/components/Recruit";
@@ -26,6 +27,7 @@ export default function Home() {
         <Audience />
         <Statement />
         <Business />
+        <Products />
         <DataSection />
         <Project />
         <News />

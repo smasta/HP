@@ -64,6 +64,101 @@ export const badges = {
   ],
 } as const;
 
+/**
+ * プロダクトサイト（いずれも外部サイト）。
+ * 紹介文は各サイトの掲載内容を要約したもので、SMARTSTART側で創作していない。
+ * 掲載内容が変わった場合は、遷移先を確認したうえで更新すること。
+ */
+export type ProductSite = {
+  id: string;
+  /** 表示名 */
+  name: string;
+  /** 英字のカテゴリ表記 */
+  en: string;
+  url: string;
+  /** バナーに添えるドメイン表記 */
+  domain: string;
+  /** 遷移先のキーメッセージ */
+  lead: string;
+  /** 何のサービスかの説明 */
+  detail: string;
+  photo: PhotoKey;
+};
+
+/** REAXIONブランドの入口となる2サイト */
+export const productHubs: ProductSite[] = [
+  {
+    id: "reaxion",
+    name: "REAXION",
+    en: "Online Store",
+    url: REAXION_STORE_URL,
+    domain: "reaxion.jp",
+    lead: "反応する力を、測る・鍛える。",
+    detail:
+      "REAXIONシリーズの製品・サービスを取り扱うオンラインストア。ラインナップと価格はストア側の表示が最新です。",
+    photo: "athlete",
+  },
+  {
+    id: "cloud",
+    name: "REAXION CLOUD",
+    en: "Data Platform",
+    url: REAXION_CLOUD_URL,
+    domain: "reaxioncloud.jp",
+    lead: "REAXIONデータを、クラウドで活用する。",
+    detail:
+      "計測したトレーニングデータを自動で格納し、個人・チーム・施設単位で分析・可視化するクラウドサービス。",
+    photo: "office",
+  },
+];
+
+/** REAXION CLOUD 上で提供される4つのサービス */
+export const productServices: ProductSite[] = [
+  {
+    id: "pro",
+    name: "REAXION PRO",
+    en: "For Sports",
+    url: "https://www.reaxioncloud.jp/services/pro",
+    domain: "reaxioncloud.jp/services/pro",
+    lead: "勝敗を分けるのは、反応だ。",
+    detail:
+      "スポーツチームや選手の反応・判断・認知を数値化し、競技力の向上につなげるトレーニングシステム。",
+    photo: "athlete",
+  },
+  {
+    id: "care",
+    name: "REAXION CARE",
+    en: "For Care",
+    url: "https://www.reaxioncloud.jp/services/care",
+    domain: "reaxioncloud.jp/services/care",
+    lead: "転倒リスクを、可視化する。",
+    detail:
+      "高齢者の注意機能と反応能力を評価し、日常生活動作の安全性向上と転倒リスク低減を支援する機能訓練支援機器。",
+    photo: "senior",
+  },
+  {
+    id: "fit",
+    name: "REAXION FIT",
+    en: "For Gyms",
+    url: "https://www.reaxioncloud.jp/services/fit",
+    domain: "reaxioncloud.jp/services/fit",
+    lead: "鍛えるのは、筋肉だけではない。",
+    detail:
+      "反応・判断・認知をゲーム感覚で鍛え、成果の可視化によってジムの継続率と体験価値を高めるサービス。",
+    photo: "marathon",
+  },
+  {
+    id: "safety",
+    name: "REAXION Safety",
+    en: "For Workplaces",
+    url: "https://www.reaxioncloud.jp/services/safety",
+    domain: "reaxioncloud.jp/services/safety",
+    lead: "事故は、防げる。",
+    detail:
+      "反応・判断・注意力を測定して労働災害のリスクを数値化。2026年4月施行の高年齢労働者の安全配慮義務に対応します。",
+    photo: "office",
+  },
+];
+
 /** REAXION CLOUD の主な機能（reaxioncloud.jp の掲載内容に準拠） */
 export const reaxionCloudFeatures = [
   "マイページ",
