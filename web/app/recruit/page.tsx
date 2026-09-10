@@ -2,7 +2,7 @@ import CtaBand from "@/components/CtaBand";
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
 import SectionHead from "@/components/SectionHead";
-import { brand } from "@/lib/content";
+import { brand, pageCovers } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -10,6 +10,7 @@ export const metadata = buildMetadata({
   description:
     "SMARTSTARTの採用情報。デジタルの力で社会の課題に挑戦したい方の参画を募集しています。募集職種と応募方法をご案内します。",
   path: "/recruit/",
+  image: pageCovers.recruit,
 });
 
 const work = [
@@ -45,6 +46,7 @@ export default function Page() {
         title="私たちと一緒に働きませんか？"
         lead="デジタルの力で社会の課題に挑戦したい方の参画を募集しています。"
         photo="kids"
+        image={pageCovers.recruit}
         crumbs={[{ label: "採用情報" }]}
       />
 

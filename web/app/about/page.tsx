@@ -2,7 +2,7 @@ import CtaBand from "@/components/CtaBand";
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
 import SectionHead from "@/components/SectionHead";
-import { values } from "@/lib/content";
+import { photos, values } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 import { nameOrigin } from "@/lib/site";
 
@@ -11,6 +11,7 @@ export const metadata = buildMetadata({
   description:
     "SMARTSTARTのMission、Vision、Values。人の可能性を、データとテクノロジーでひらく——私たちの考え方をご紹介します。",
   path: "/about/",
+  image: photos.athlete,
 });
 
 const valueBodies: Record<string, string> = {

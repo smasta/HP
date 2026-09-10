@@ -2,7 +2,7 @@ import CtaBand from "@/components/CtaBand";
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
 import SectionHead from "@/components/SectionHead";
-import { brand } from "@/lib/content";
+import { brand, photos } from "@/lib/content";
 import { OG_IMAGE, SITE_URL, absolute, buildMetadata } from "@/lib/seo";
 import { access, companyProfile } from "@/lib/site";
 
@@ -11,6 +11,7 @@ export const metadata = buildMetadata({
   description:
     "株式会社スマートスタート（SMARTSTART, Inc.）の会社概要。設立、資本金、役員、所在地、認定・加盟団体、アクセスをご案内します。",
   path: "/about/company/",
+  image: photos.office,
 });
 
 /** LocalBusiness（Organization と住所・連絡先を一致させている） */

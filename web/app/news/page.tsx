@@ -2,7 +2,7 @@ import Image from "next/image";
 import CtaBand from "@/components/CtaBand";
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
-import { news, newsCategories, photos } from "@/lib/content";
+import { news, newsCategories, pageCovers, photos } from "@/lib/content";
 import { SITE_URL, absolute, buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -10,6 +10,7 @@ export const metadata = buildMetadata({
   description:
     "SMARTSTARTからのお知らせ。測定事業、REAXION、Human Data、システム開発、イベント、会社情報に関する最新情報を掲載しています。",
   path: "/news/",
+  image: pageCovers.news,
 });
 
 export default function Page() {
@@ -42,6 +43,7 @@ export default function Page() {
         title="新着情報"
         lead="事業とサービスに関するお知らせを掲載しています。"
         photo="office"
+        image={pageCovers.news}
         crumbs={[{ label: "新着情報" }]}
       />
 

@@ -11,6 +11,7 @@ export const metadata = buildMetadata({
   description:
     "SMARTSTARTの導入実績と事例。自治体の介護予防、企業の健康経営、大会の計測・運営など、測定とデータ活用が現場でどう使われているかを、課題・実施内容・成果とあわせてご紹介します。",
   path: "/case-studies/",
+  image: photos.senior,
 });
 
 export default function Page() {

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
 import PolicyBody from "@/components/PolicyBody";
+import { pageCovers } from "@/lib/content";
 import { findPolicy, mainPolicy, subPolicies } from "@/lib/policies";
 import { buildMetadata } from "@/lib/seo";
 
@@ -21,6 +22,7 @@ export async function generateMetadata({ params }: Params) {
     title: policy.title,
     description: `株式会社スマートスタートの${policy.title}を掲載しています。個人情報保護方針をはじめとする当社のポリシーとあわせてご確認ください。`,
     path: `/privacy-policy/${slug}/`,
+    image: pageCovers.policy,
   });
 }
 
@@ -37,6 +39,7 @@ export default async function Page({ params }: Params) {
         en="POLICY"
         title={policy.title}
         photo="office"
+        image={pageCovers.policy}
         crumbs={[
           { label: mainPolicy.title, href: "/privacy-policy/" },
           { label: policy.title },

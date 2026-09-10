@@ -35,6 +35,8 @@ export type Hub = {
   lead: string;
   overview: string;
   photo: PhotoKey;
+  /** 写真の代わりに使うキービジュアル（scripts/generate-page-covers.py で生成） */
+  cover?: { src: string; alt: string };
   seo: { title: string; description: string };
 };
 
@@ -75,6 +77,10 @@ export const hubs: Hub[] = [
     overview:
       "自社プロダクトを動かし続けてきた開発・運用の体制を、そのまま受託開発・保守・エンジニアリング支援としてご利用いただけます。測定機器やクラウドを扱ってきた経験から、データを扱うシステムの設計を得意としています。",
     photo: "office",
+    cover: {
+      src: "/images/covers/system.jpg",
+      alt: "六角形の階層をモチーフにしたシステム開発のキービジュアル",
+    },
     seo: {
       title: "システム開発・保守",
       description:

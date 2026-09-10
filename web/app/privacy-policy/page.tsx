@@ -1,7 +1,7 @@
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
 import PolicyBody from "@/components/PolicyBody";
-import { brand } from "@/lib/content";
+import { brand, pageCovers } from "@/lib/content";
 import { mainPolicy, subPolicies } from "@/lib/policies";
 import { buildMetadata } from "@/lib/seo";
 
@@ -10,6 +10,7 @@ export const metadata = buildMetadata({
   description:
     "株式会社スマートスタートの個人情報保護方針。個人情報の取得と利用目的、第三者提供、安全管理措置、開示等の請求、Cookieの取り扱い、お問い合わせ窓口について掲載しています。",
   path: "/privacy-policy/",
+  image: pageCovers.policy,
 });
 
 export default function Page() {
@@ -20,6 +21,7 @@ export default function Page() {
         title={mainPolicy.title}
         lead="個人情報の取り扱いに関する方針を掲載しています。"
         photo="office"
+        image={pageCovers.policy}
         crumbs={[{ label: mainPolicy.title }]}
       />
 

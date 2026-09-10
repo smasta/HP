@@ -2,7 +2,7 @@ import Contact from "@/components/Contact";
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
 import SectionHead from "@/components/SectionHead";
-import { contactTypes } from "@/lib/content";
+import { contactTypes, photos } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -10,6 +10,7 @@ export const metadata = buildMetadata({
   description:
     "SMARTSTARTへのお問い合わせ。サービスのご相談、REAXION導入相談、研究連携、システム開発、イベント・大会運営、取材、採用に関するお問い合わせを承ります。",
   path: "/contact/",
+  image: photos.office,
 });
 
 export default function Page() {

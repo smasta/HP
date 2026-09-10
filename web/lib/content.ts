@@ -534,13 +534,69 @@ const CATEGORY_SLUG: Record<string, string> = {
   "お知らせ": "info",
 };
 
+/** カテゴリ固有のキービジュアル。従来は先頭記事の写真を借りていた */
+const CATEGORY_COVER: Record<string, { src: string; alt: string }> = {
+  measurement: {
+    src: "/images/covers/news-measurement.jpg",
+    alt: "散布図と回帰線をモチーフにした測定事業カテゴリのキービジュアル",
+  },
+  reaxion: {
+    src: "/images/covers/news-reaxion.jpg",
+    alt: "反応の波形をモチーフにしたREAXIONカテゴリのキービジュアル",
+  },
+  event: {
+    src: "/images/covers/news-event.jpg",
+    alt: "放射する線をモチーフにしたイベントカテゴリのキービジュアル",
+  },
+  company: {
+    src: "/images/covers/news-company.jpg",
+    alt: "六角形の階層をモチーフにした会社情報カテゴリのキービジュアル",
+  },
+  info: {
+    src: "/images/covers/news-info.jpg",
+    alt: "階段状の積み上げをモチーフにしたお知らせカテゴリのキービジュアル",
+  },
+};
+
 export const newsCategories = Object.entries(CATEGORY_SLUG)
   .map(([label, slug]) => ({
     label,
     slug,
+    cover: CATEGORY_COVER[slug],
     count: news.filter((item) => item.category === label).length,
   }))
   .filter((category) => category.count > 0);
+
+/**
+ * 写真を使い回していたページに置く固有のキービジュアル。
+ * 同じ写真が複数ページのヒーローに並ぶ状態を解消するために用意した。
+ */
+export const pageCovers = {
+  column: {
+    src: "/images/covers/column.jpg",
+    alt: "節点と接続線をモチーフにしたコラムのキービジュアル",
+  },
+  news: {
+    src: "/images/covers/news.jpg",
+    alt: "節点と接続線をモチーフにした新着情報のキービジュアル",
+  },
+  policy: {
+    src: "/images/covers/policy.jpg",
+    alt: "節点と接続線をモチーフにした個人情報保護方針のキービジュアル",
+  },
+  recruit: {
+    src: "/images/covers/recruit.jpg",
+    alt: "階段状の積み上げをモチーフにした採用情報のキービジュアル",
+  },
+  humanData: {
+    src: "/images/covers/human-data.jpg",
+    alt: "散布図と回帰線をモチーフにしたHuman Dataのキービジュアル",
+  },
+  system: {
+    src: "/images/covers/system.jpg",
+    alt: "六角形の階層をモチーフにしたシステム開発のキービジュアル",
+  },
+} as const;
 
 export const newsByCategory = (slug: string) => {
   const category = newsCategories.find((item) => item.slug === slug);

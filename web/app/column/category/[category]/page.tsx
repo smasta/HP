@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: Params) {
     title: `${category.name}のコラム`,
     description: category.description,
     path: `/column/category/${key}/`,
+    image: category.cover,
   });
 }
 
@@ -67,6 +68,7 @@ export default async function Page({ params }: Params) {
         title={category.name}
         lead={category.lead}
         photo={category.photo}
+        image={category.cover}
         crumbs={[{ label: "コラム", href: "/column/" }, { label: category.name }]}
       />
 

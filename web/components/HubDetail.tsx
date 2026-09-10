@@ -15,6 +15,7 @@ export default function HubDetail({ hub }: { hub: Hub }) {
         title={hub.name}
         lead={hub.lead}
         photo={hub.photo}
+        image={hub.cover}
         crumbs={[{ label: hub.name }]}
       />
 

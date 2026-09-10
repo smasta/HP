@@ -30,6 +30,26 @@ TARGETS = [
     ("case-balena-reaxion-voice", "orbit",  "REAXION", "BALENA との PoC"),
     ("case-reaxion-care-facilities", "ripple", "REAXION", "介護事業所への導入"),
     ("case-nankatsu-sc",          "pulse",  "REAXION", "南葛SC"),
+    # コラム — 一覧と6カテゴリ。写真の使い回しをやめ、テーマごとに絵柄を変える
+    ("column",           "lattice", "会社情報", "コラム一覧"),
+    ("column-safety",    "hex",     "測定事業", "労働安全衛生"),  # steps は記事のキービジュアルと似るため避ける
+    ("column-care",      "orbit",   "REAXION", "介護・高齢者"),
+    ("column-wellness",  "series",  "測定事業", "健康経営"),
+    ("column-sports",    "burst",   "イベント", "アスリート"),
+    ("column-kids",      "ripple",  "イベント", "こども"),
+    ("column-research",  "axis",    "会社情報", "研究・技術"),
+    # ニュース — 一覧と5カテゴリ。従来は先頭記事の写真を借りていた
+    ("news",             "lattice", "会社情報", "新着情報一覧"),
+    ("news-reaxion",     "pulse",   "REAXION", "REAXION"),
+    ("news-measurement", "axis",    "測定事業", "測定事業"),
+    ("news-event",       "burst",   "イベント", "イベント"),
+    ("news-company",     "hex",     "会社情報", "会社情報"),
+    ("news-info",        "steps",   "お知らせ", "お知らせ"),
+    # 写真が内容と噛み合っていなかったページ
+    ("policy",           "lattice", "会社情報", "個人情報保護方針（7ページで共有）"),
+    ("recruit",          "steps",   "会社情報", "採用情報"),
+    ("human-data",       "axis",    "測定事業", "Human Data"),
+    ("system",           "hex",     "会社情報", "システム開発一覧"),
 ]
 
 

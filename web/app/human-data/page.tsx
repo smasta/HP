@@ -3,6 +3,7 @@ import DataSection from "@/components/DataSection";
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
 import SectionHead from "@/components/SectionHead";
+import { pageCovers } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -10,6 +11,7 @@ export const metadata = buildMetadata({
   description:
     "測定から生まれるデータを蓄積・分析し、次の価値へつなげるSMARTSTARTのHuman Data。研究機関・大学との連携についてもご案内します。",
   path: "/human-data/",
+  image: pageCovers.humanData,
 });
 
 const uses = [
@@ -39,6 +41,7 @@ export default function Page() {
         title="人の状態を、ひとつの数字で終わらせない。"
         lead="測定から生まれるデータを蓄積・分析し、次の価値へつなげる。"
         photo="development"
+        image={pageCovers.humanData}
         crumbs={[{ label: "Human Data" }]}
       />
 

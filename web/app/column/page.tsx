@@ -4,6 +4,7 @@ import CtaBand from "@/components/CtaBand";
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
 import { columns } from "@/lib/columns";
+import { pageCovers } from "@/lib/content";
 import { SITE_URL, absolute, buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -11,6 +12,7 @@ export const metadata = buildMetadata({
   description:
     "測定・分析の現場から、労働安全衛生、介護、健康経営、スポーツ、こどもの発達まで。認知・身体・行動を測るための実務と制度を解説します。",
   path: "/column/",
+  image: pageCovers.column,
 });
 
 export default function Page() {
@@ -43,6 +45,7 @@ export default function Page() {
         title="コラム"
         lead="測るとは何か。現場で使える形にするために、制度・手法・データの読み方を解説します。"
         photo="office"
+        image={pageCovers.column}
         crumbs={[{ label: "コラム" }]}
       />
 

@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: Params) {
     title: `${category.label}の新着情報`,
     description: `SMARTSTARTの${category.label}に関するお知らせ・プレスリリース${category.count}件を掲載しています。測定・分析・トレーニングの最新の取り組みをご覧いただけます。`,
     path: `/news/category/${slug}/`,
+    image: category.cover,
   });
 }
 
@@ -60,6 +61,7 @@ export default async function Page({ params }: Params) {
         title={`${category.label}の新着情報`}
         lead={`${category.label}に関するお知らせを${category.count}件掲載しています。`}
         photo={category.items[0]?.photo ?? "office"}
+        image={category.cover}
         crumbs={[
           { label: "新着情報", href: "/news/" },
           { label: category.label },

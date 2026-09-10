@@ -42,6 +42,8 @@ export type ColumnCategory = {
   key: ColumnCategoryKey;
   name: string;
   en: string;
+  /** カテゴリ固有のキービジュアル。未指定なら photo の写真を使う */
+  cover?: { src: string; alt: string };
   /** カテゴリ一覧ページのリード文 */
   lead: string;
   description: string;
@@ -62,6 +64,10 @@ export const columnCategories: ColumnCategory[] = [
     description:
       "2026年4月施行の改正労働安全衛生法をはじめ、高年齢労働者の安全確保に必要な制度・測定・職場改善の実務をまとめています。",
     photo: "office",
+    cover: {
+      src: "/images/covers/column-safety.jpg",
+      alt: "六角形の階層をモチーフにした労働安全衛生カテゴリのキービジュアル",
+    },
   },
   {
     key: "care",
@@ -71,6 +77,10 @@ export const columnCategories: ColumnCategory[] = [
     description:
       "転倒リスクの評価方法、個別機能訓練加算やLIFEへの対応など、介護事業所で使える測定と記録の考え方を解説します。",
     photo: "senior",
+    cover: {
+      src: "/images/covers/column-care.jpg",
+      alt: "同心円とゲージをモチーフにした高齢者・介護カテゴリのキービジュアル",
+    },
   },
   {
     key: "wellness",
@@ -80,6 +90,10 @@ export const columnCategories: ColumnCategory[] = [
     description:
       "健康経営優良法人の要件、産業保健との連携、従業員の認知・身体機能の把握など、人事・総務が扱う実務を解説します。",
     photo: "office",
+    cover: {
+      src: "/images/covers/column-wellness.jpg",
+      alt: "棒グラフと推移線をモチーフにした健康経営カテゴリのキービジュアル",
+    },
   },
   {
     key: "sports",
@@ -89,6 +103,10 @@ export const columnCategories: ColumnCategory[] = [
     description:
       "反応速度や動体視力の測定、トレーニングへの接続など、チームや指導者が使える科学的アプローチを解説します。",
     photo: "athlete",
+    cover: {
+      src: "/images/covers/column-sports.jpg",
+      alt: "放射する線をモチーフにしたアスリート・スポーツカテゴリのキービジュアル",
+    },
   },
   {
     key: "kids",
@@ -98,6 +116,10 @@ export const columnCategories: ColumnCategory[] = [
     description:
       "子どもの発達段階に応じた運動と認知の関わり、支援や指導の場での測定の活かし方を解説します。",
     photo: "kids",
+    cover: {
+      src: "/images/covers/column-kids.jpg",
+      alt: "広がる同心の弧をモチーフにしたこども・発達カテゴリのキービジュアル",
+    },
   },
   {
     key: "research",
@@ -107,6 +129,10 @@ export const columnCategories: ColumnCategory[] = [
     description:
       "認知機能・反応時間・注意機能といった用語の意味と測定手法、データの読み方を横断的に解説します。",
     photo: "development",
+    cover: {
+      src: "/images/covers/column-research.jpg",
+      alt: "散布図と回帰線をモチーフにした研究・技術カテゴリのキービジュアル",
+    },
   },
 ];
 

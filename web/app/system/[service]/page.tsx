@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import ServiceDetail from "@/components/ServiceDetail";
+import { photos } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 import { findService, servicesOf } from "@/lib/site";
 
@@ -22,6 +23,7 @@ export async function generateMetadata({ params }: Params) {
     title: service.seo.title,
     description: service.seo.description,
     path: `/${HUB}/${slug}/`,
+    image: service.cover ?? photos[service.photo],
   });
 }
 
