@@ -11,6 +11,9 @@
 ニュースとコラムで絵柄を揃えるためで、モチーフの定義を二重に持たない。
 モチーフは MOTIF に slug を書いて指定する。書かなければ
 ニュース側のキーワード判定にそのまま任せる。
+
+記事の中身に合わせた専用のキービジュアルがある slug は
+generate-column-keyvisuals.py が受け持つ。こちらは手を出さない。
 """
 import importlib.util
 import json
@@ -35,9 +38,8 @@ ACCENT_SOURCE = {
 }
 
 
-def load_news_module(web: Path):
-    path = web / "scripts/generate-news-covers.py"
-    spec = importlib.util.spec_from_file_location("news_covers", path)
+def load_module(path: Path, name: str):
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -47,8 +49,11 @@ def main():
     web = Path(sys.argv[1]).resolve()
     force = "--force" in sys.argv
 
-    cov = load_news_module(web)
+    cov = load_module(web / "scripts/generate-news-covers.py", "news_covers")
     cov.OVERRIDES.update(MOTIF)
+
+    bespoke = load_module(
+        web / "scripts/generate-column-keyvisuals.py", "column_keyvisuals").KEYVISUALS
 
     data = json.loads((web / "lib/columns.json").read_text(encoding="utf-8"))
     outdir = web / "public/images/columns"
@@ -56,6 +61,9 @@ def main():
 
     for item in data:
         path = outdir / f"{item['slug']}.jpg"
+        if item["slug"] in bespoke:
+            print(f"{item['slug']:<48}専用のキービジュアルがあるため生成しない")
+            continue
         if path.exists() and not force:
             print(f"{item['slug']:<48}既存のため生成しない")
             continue
