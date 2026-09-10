@@ -5,8 +5,13 @@ import { contactTypes } from "@/lib/content";
 
 /** 受信先。環境変数で上書きできる。 */
 const TO = process.env.CONTACT_TO_EMAIL || "oxy@smasta.co.jp";
-/** 送信元。多くのメールサーバーは自ドメインの差出人しか許可しないため分けている。 */
-const FROM = process.env.CONTACT_FROM_EMAIL || "no-reply@smasta.co.jp";
+/**
+ * 送信元。多くのメールサーバーは、認証したアカウント（またはその別名）以外を
+ * 差出人にすると拒否するか勝手に書き換える。Google Workspace もそうなので、
+ * 明示指定がなければ認証アカウントをそのまま差出人にする。
+ */
+const FROM =
+  process.env.CONTACT_FROM_EMAIL || process.env.SMTP_USER || "no-reply@smasta.co.jp";
 
 export type ContactInput = {
   type: string;
@@ -100,8 +105,11 @@ export async function submitContact(
 
   if (!transport) {
     // SMTP未設定でも入力内容を失わないよう、サーバーログに残して失敗を返す
+    const missing = ["SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD"].filter(
+      (key) => !process.env[key]
+    );
     console.error(
-      "[contact] SMTPが未設定のため送信できませんでした。環境変数 SMTP_HOST / SMTP_USER / SMTP_PASSWORD を設定してください。"
+      `[contact] SMTPが未設定のため送信できませんでした。未設定の環境変数: ${missing.join(", ")}`
     );
     console.error("[contact] 受信できなかった内容:\n" + text);
     return {
