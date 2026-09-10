@@ -59,6 +59,20 @@ const PAGE_MAP = {
   "/snsguideline/": "/privacy-policy/social-media/",
   "/cookie/": "/privacy-policy/cookie/",
 
+  // 会社情報（Search Console で流入を確認。/アクセス/ は旧サイトの5番目に多い着地ページ）
+  "/アクセス/": "/about/company/",
+  "/outline/沿革/": "/about/company/",
+  "/outline/": "/about/",
+
+  // WordPress 以前の静的プレスリリース（.html）
+  "/pr161002.html": "/news/",
+  "/pr161007.html": "/news/",
+  "/pr161014.html": "/news/",
+  "/pr161025.html": "/news/",
+  "/pr161101.html": "/news/",
+  "/pr180530.html": "/news/",
+  "/pr200420.html": "/news/",
+
   // 不要ページ
   "/sample-page/": "/",
 };
@@ -95,6 +109,18 @@ export default function buildRedirects() {
       redirects.push({ source, destination: to, permanent: true });
     }
   }
+
+  // WordPress のタグ・カテゴリ・投稿者アーカイブは新着情報一覧へ。
+  // Search Console 上ではタグページに 20 前後の表示回数があり、放置すると404になる
+  redirects.push(
+    { source: "/tag/:slug*", destination: "/news/", permanent: true },
+    { source: "/category/:slug*", destination: "/news/", permanent: true },
+    { source: "/author/:slug*", destination: "/news/", permanent: true },
+    // 上で列挙しきれない静的プレスリリースも拾う
+    { source: "/pr:id(\\d+).html", destination: "/news/", permanent: true },
+    // 旧・会社情報配下
+    { source: "/outline/:path*", destination: "/about/", permanent: true }
+  );
 
   // 旧記事の日付アーカイブ（/2025/ /2025/08/ など）は新着情報一覧へ
   redirects.push(

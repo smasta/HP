@@ -65,8 +65,9 @@ def main():
                         fill=gen.lerp(a, b, i / (46 * gen.SS)))
 
         img = img.resize((gen.W, gen.H), Image.LANCZOS)
-        path = outdir / f"{slug}.webp"
-        img.save(path, "WEBP", quality=86, method=6)
+        path = outdir / f"{slug}.jpg"
+        img.save(path, "JPEG", quality=88, optimize=True,
+                 progressive=True, subsampling=0)
         print(f"{slug:<32}{motif:<10}{gen.MOTIF_JA[motif]:<12}{path.stat().st_size // 1024}KB  ({label})")
 
     print(f"\n生成: {len(TARGETS)} 枚")

@@ -121,10 +121,20 @@ export default function SplitText({
     </span>
   ));
 
+  // 見出しは aria-label で名前を与えられるので、分解した文字は読み上げから外す。
+  // それ以外の要素は aria-label が効かないため、文字をそのまま読ませる。
+  // どちらの場合もテキストは DOM に一度しか出さない
+  // （読み上げ用の複製を置くと、検索エンジンが見出しを二重に読む）。
+  const isHeading = typeof Tag === "string" && /^h[1-6]$/.test(Tag);
+
   return (
-    <Tag className={className} style={style} {...(reveal ? { "data-reveal": "chars" } : {})}>
-      <span className="sr-only">{text.replace(/\n/g, " ")}</span>
-      <span aria-hidden="true">{lines}</span>
+    <Tag
+      className={className}
+      style={style}
+      {...(reveal ? { "data-reveal": "chars" } : {})}
+      {...(isHeading ? { "aria-label": text.replace(/\n/g, "") } : {})}
+    >
+      {isHeading ? <span aria-hidden="true">{lines}</span> : lines}
     </Tag>
   );
 }

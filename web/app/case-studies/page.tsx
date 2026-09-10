@@ -3,7 +3,7 @@ import CtaBand from "@/components/CtaBand";
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
 import { photos } from "@/lib/content";
-import { buildMetadata } from "@/lib/seo";
+import { SITE_URL, absolute, buildMetadata } from "@/lib/seo";
 import { caseStudies } from "@/lib/site";
 
 export const metadata = buildMetadata({
@@ -14,8 +14,30 @@ export const metadata = buildMetadata({
 });
 
 export default function Page() {
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "導入実績・事例",
+    url: absolute("/case-studies/"),
+    isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website` },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: caseStudies.length,
+      itemListElement: caseStudies.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: absolute(`/case-studies/${item.slug}/`),
+        name: `${item.client}｜導入事例`,
+      })),
+    },
+  };
+
   return (
     <PageShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
       <PageHeader
         en="CASE STUDIES"
         title="導入実績・事例"

@@ -454,7 +454,8 @@ def build(item, out_path):
                     fill=lerp(a, b, i / (46 * SS)))
 
     img = img.resize((W, H), Image.LANCZOS)
-    img.save(out_path, "WEBP", quality=86, method=6)
+    img.save(out_path, "JPEG", quality=88, optimize=True,
+             progressive=True, subsampling=0)
     return name
 
 
@@ -473,7 +474,7 @@ def main():
         if cover.get("src") and "/news/covers/" not in cover["src"]:
             report.append((item["slug"], "既存の実写を維持", "-"))
             continue
-        path = outdir / f"{item['slug']}.webp"
+        path = outdir / f"{item['slug']}.jpg"
         name = build(item, path)
         report.append((item["slug"], name, f"{path.stat().st_size // 1024}KB"))
 

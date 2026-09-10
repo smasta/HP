@@ -4,7 +4,7 @@ import CtaBand from "@/components/CtaBand";
 import PageHeader from "@/components/PageHeader";
 import PageShell from "@/components/PageShell";
 import SectionHead from "@/components/SectionHead";
-import { buildMetadata } from "@/lib/seo";
+import { SITE_URL, absolute, buildMetadata } from "@/lib/seo";
 import {
   caseStudies,
   findCaseStudy,
@@ -29,6 +29,8 @@ export async function generateMetadata({ params }: Params) {
     title: `${item.client}｜導入事例`,
     description: `${item.summary}分野は${item.field}、導入時期は${item.startDate}。導入前の課題、実施した内容、得られた変化までをご紹介します。`,
     path: `/case-studies/${slug}/`,
+    type: "article",
+    image: item.cover ?? photos[item.photo],
   });
 }
 
@@ -47,8 +49,30 @@ export default async function Page({ params }: Params) {
     { en: "Result", ja: "得られた変化・成果", items: item.result },
   ];
 
+  const cover = item.cover ?? photos[item.photo];
+  const caseJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `${item.client}｜導入事例`,
+    description: item.summary,
+    articleSection: item.field,
+    isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website` },
+    image: [absolute(cover.src)],
+    inLanguage: "ja",
+    author: { "@id": `${SITE_URL}/#organization` },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": absolute(`/case-studies/${item.slug}/`),
+    },
+  };
+
   return (
     <PageShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(caseJsonLd) }}
+      />
       <PageHeader
         en="CASE STUDY"
         title={item.client}

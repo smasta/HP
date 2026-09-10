@@ -488,7 +488,7 @@ export const services: Service[] = [
     related: ["maintenance", "ses"],
     photo: "office",
     cover: {
-      src: "/images/covers/system-development.webp",
+      src: "/images/covers/system-development.jpg",
       alt: "節点と接続線をモチーフにしたキービジュアル",
     },
     seo: {
@@ -531,7 +531,7 @@ export const services: Service[] = [
     related: ["development", "ses"],
     photo: "office",
     cover: {
-      src: "/images/covers/system-maintenance.webp",
+      src: "/images/covers/system-maintenance.jpg",
       alt: "反応の波形をモチーフにしたキービジュアル",
     },
     seo: {
@@ -574,7 +574,7 @@ export const services: Service[] = [
     related: ["development", "maintenance"],
     photo: "office",
     cover: {
-      src: "/images/covers/system-ses.webp",
+      src: "/images/covers/system-ses.jpg",
       alt: "六角形の階層をモチーフにしたキービジュアル",
     },
     seo: {
@@ -743,7 +743,7 @@ export const caseStudies: CaseStudy[] = [
     related: ["care", "fall-risk"],
     photo: "senior",
     cover: {
-      src: "/images/covers/case-balena-reaxion-voice.webp",
+      src: "/images/covers/case-balena-reaxion-voice.jpg",
       alt: "同心円とゲージをモチーフにしたキービジュアル",
     },
     source: {
@@ -784,7 +784,7 @@ export const caseStudies: CaseStudy[] = [
     related: ["care", "fall-risk"],
     photo: "senior",
     cover: {
-      src: "/images/covers/case-reaxion-care-facilities.webp",
+      src: "/images/covers/case-reaxion-care-facilities.jpg",
       alt: "広がる同心の弧をモチーフにしたキービジュアル",
     },
     source: {
@@ -814,7 +814,7 @@ export const caseStudies: CaseStudy[] = [
     related: ["pro"],
     photo: "athlete",
     cover: {
-      src: "/images/covers/case-nankatsu-sc.webp",
+      src: "/images/covers/case-nankatsu-sc.jpg",
       alt: "反応の波形をモチーフにしたキービジュアル",
     },
     source: {
