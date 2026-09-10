@@ -58,19 +58,41 @@ function validate(input: ContactInput) {
   return errors;
 }
 
+/**
+ * Googleのアプリパスワードは「abcd efgh ijkl mnop」と4文字区切りで表示される。
+ * 表示上の空白で、認証時には含めない。貼り付けたままでも通るように取り除く。
+ * 前後の改行・空白も、環境変数の貼り付けで混入しやすいので落とす。
+ */
+const cleanSecret = (value: string | undefined) => value?.replace(/\s+/g, "") ?? "";
+
 function buildTransport() {
-  const host = process.env.SMTP_HOST;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASSWORD;
+  const host = process.env.SMTP_HOST?.trim();
+  const user = process.env.SMTP_USER?.trim();
+  const pass = cleanSecret(process.env.SMTP_PASSWORD);
   if (!host || !user || !pass) return null;
 
-  const port = Number(process.env.SMTP_PORT || 587);
+  const port = Number(process.env.SMTP_PORT?.trim() || 587);
   return nodemailer.createTransport({
     host,
     port,
     secure: port === 465,
     auth: { user, pass },
   });
+}
+
+/** 認証エラー時に、秘密を出さずに設定の形だけをログに残す */
+function describeConfig() {
+  const raw = process.env.SMTP_PASSWORD ?? "";
+  const cleaned = cleanSecret(raw);
+  return [
+    `host=${process.env.SMTP_HOST?.trim() || "(未設定)"}`,
+    `port=${process.env.SMTP_PORT?.trim() || "587(既定)"}`,
+    `user=${process.env.SMTP_USER?.trim() || "(未設定)"}`,
+    `userはメールアドレス形式か=${/.+@.+\..+/.test(process.env.SMTP_USER?.trim() ?? "")}`,
+    `password長=${cleaned.length}（空白除去前 ${raw.length}）`,
+    `passwordに空白あり=${raw !== cleaned}`,
+    "※ アプリパスワードは空白を除いて16文字",
+  ].join(" / ");
 }
 
 const line = (label: string, value: string) => `${label}：${value || "（未記入）"}`;
@@ -160,6 +182,9 @@ export async function submitContact(
     return { ok: true };
   } catch (error) {
     console.error("[contact] 送信に失敗しました", error);
+    if ((error as { code?: string })?.code === "EAUTH") {
+      console.error("[contact] 認証に使った設定: " + describeConfig());
+    }
     return {
       ok: false,
       message:
