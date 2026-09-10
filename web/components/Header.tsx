@@ -113,6 +113,15 @@ export default function Header({ solidFromTop = false }: { solidFromTop?: boolea
 
           <div className="flex items-center gap-2.5 md:gap-3">
             <a
+              href="/column/"
+              className={[
+                "display-en hidden items-center gap-1.5 text-[0.78rem] font-semibold transition-colors duration-300 lg:inline-flex",
+                light ? "text-ink/70 hover:text-ink" : "text-white/75 hover:text-white",
+              ].join(" ")}
+            >
+              Column
+            </a>
+            <a
               href="/#products"
               className={[
                 "display-en hidden items-center gap-1.5 text-[0.78rem] font-semibold transition-colors duration-300 lg:inline-flex",

@@ -9,6 +9,7 @@ import Products from "@/components/Products";
 import Project from "@/components/Project";
 import News from "@/components/News";
 import Recruit from "@/components/Recruit";
+import ColumnTeaser from "@/components/ColumnTeaser";
 import Contact from "@/components/Contact";
 import Store from "@/components/Store";
 import Footer from "@/components/Footer";
@@ -31,6 +32,7 @@ export default function Home() {
         <DataSection />
         <Project />
         <News />
+        <ColumnTeaser />
         <Recruit />
         <Contact />
         <Store />

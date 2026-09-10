@@ -13,6 +13,7 @@ const companyLinks = [
   { label: "私たちについて", href: "/about/" },
   { label: "会社概要", href: "/about/company/" },
   { label: "導入実績・事例", href: "/case-studies/" },
+  { label: "コラム", href: "/column/" },
   { label: "新着情報", href: "/news/" },
   { label: "採用情報", href: "/recruit/" },
   { label: "お問い合わせ", href: "/contact/" },
