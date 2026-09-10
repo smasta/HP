@@ -65,6 +65,37 @@ def save(img, path):
     print(f"  {path.name}  {path.stat().st_size // 1024}KB")
 
 
+def wrap(d, text, f, width):
+    """指定幅に収まるよう改行する。日本語なので文字単位で折る"""
+    lines, cur = [], ""
+    for ch in text:
+        t = cur + ch
+        if d.textlength(t, font=f) > width and cur:
+            lines.append(cur)
+            cur = ch
+        else:
+            cur = t
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def center_lines(d, box, lines, f, fill, leading):
+    x0, y0, x1, y1 = box
+    total = len(lines) * leading
+    y = (y0 + y1 - total) / 2
+    for ln in lines:
+        w = d.textlength(ln, font=f)
+        d.text(((x0 + x1 - w) / 2, y), ln, font=f, fill=fill)
+        y += leading
+
+
+def arrow(d, x, y, fill, size):
+    d.line([(x - size, y), (x + size * 0.45, y)], fill=fill, width=2 * SS)
+    d.polygon([(x + size, y), (x + size * 0.35, y - size * 0.42),
+               (x + size * 0.35, y + size * 0.42)], fill=fill)
+
+
 # ------------------------------------------------------------------ 図1
 def figure_stages(out):
     """災害が起きる4段階と、体力チェックが見ている範囲"""
@@ -177,6 +208,125 @@ def figure_traits(out):
     save(img, out)
 
 
+
+# ------------------------------------------------------------------ 図3
+def figure_five_measures(out):
+    """指針が定める5つの措置。並列ではなく一続きの流れであることを示す"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "指針が定める5つの措置", font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "体制づくりから教育まで、一続きの流れとして書かれている",
+           font=font(19), fill=MIST)
+
+    # 文字単位の折り返しでは「立等」だけが残るなど収まりが悪いので、改行位置を持たせる
+    names = [
+        "安全衛生管理体制\nの確立等",
+        "職場環境の改善",
+        "高年齢者の健康や\n体力の状況の把握",
+        "高年齢者の健康や\n体力の状況に\n応じた対応",
+        "安全衛生教育",
+    ]
+    f_num, f_name = font(30, True), font(20, True)
+    bw, gap = 262 * SS, 42 * SS
+    x0, y0, bh = 92 * SS, 288 * SS, 310 * SS
+
+    for i, name in enumerate(names):
+        x = x0 + i * (bw + gap)
+        accent = lerp(EMERALD, INDIGO, i / (len(names) - 1))
+        d.rounded_rectangle([x, y0, x + bw, y0 + bh], radius=18 * SS,
+                            fill=tuple(round(c * 0.14) for c in accent),
+                            outline=accent, width=2 * SS)
+        d.text((x + 24 * SS, y0 + 22 * SS), str(i + 1), font=f_num, fill=accent)
+        center_lines(d, (x, y0 + 84 * SS, x + bw, y0 + bh - 22 * SS),
+                     name.split("\n"), f_name, WHITE, 36 * SS)
+        if i < len(names) - 1:
+            arrow(d, x + bw + gap / 2, y0 + bh / 2, MIST, 15 * SS)
+
+    # どこまでが個人差を見る前の段階で、どこからが対になっているかを示す
+    by = y0 + bh + 46 * SS
+    for (i0, i1, accent, label) in [
+        (0, 1, EMERALD, "個人の状態を把握する前に着手できる段階"),
+        (2, 3, INDIGO, "把握した結果を働き方に反映する段階。3は4のためにある"),
+    ]:
+        b0 = x0 + i0 * (bw + gap)
+        b1 = x0 + i1 * (bw + gap) + bw
+        d.line([(b0, by + 22 * SS), (b0, by), (b1, by), (b1, by + 22 * SS)],
+               fill=accent, width=2 * SS)
+        d.text((b0, by + 42 * SS), label, font=font(21, True), fill=accent)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：高年齢者の労働災害防止のための指針 第2 事業者が講ずべき措置 をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
+# ------------------------------------------------------------------ 図4
+def figure_grasp_to_action(out):
+    """措置3で把握した情報が、措置4のどの対応につながるか"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "措置3で把握した情報を、措置4のどこに使うか",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "把握して終わらせないために、測定の設計段階で対応を決めておく",
+           font=font(19), fill=MIST)
+
+    f_head = font(22, True)
+    f_item = font(19, True)
+    f_note = font(17)
+
+    left = [
+        ("健康診断の結果", "雇入時および定期の健康診断"),
+        ("体力チェック", "筋力、バランス能力、全身持久力"),
+        ("感覚機能・認知機能", "事業場ごとに設計が必要な部分"),
+    ]
+    right = [
+        ("就業上の措置", "労働時間の短縮、深夜業の回数の減少、作業の転換"),
+        ("状況に応じた業務の提供", "適合する業務とのマッチング、ワークシェアリング"),
+        ("健康保持増進措置", "身体機能等の維持向上のための取組"),
+    ]
+
+    cw, ch_ = 560 * SS, 118 * SS
+    cgap = 22 * SS
+    lx, rx = 92 * SS, 948 * SS
+    y0 = 268 * SS
+
+    for (cx, rows, accent, head) in [(lx, left, EMERALD, "措置3  把握する"),
+                                     (rx, right, INDIGO, "措置4  対応する")]:
+        d.text((cx, y0 - 46 * SS), head, font=f_head, fill=accent)
+        for i, (name, note) in enumerate(rows):
+            y = y0 + i * (ch_ + cgap)
+            d.rounded_rectangle([cx, y, cx + cw, y + ch_], radius=14 * SS,
+                                fill=tuple(round(c * 0.13) for c in accent),
+                                outline=tuple(round(c * 0.8) for c in accent), width=2 * SS)
+            d.rounded_rectangle([cx, y, cx + 5 * SS, y + ch_], radius=3 * SS, fill=accent)
+            d.text((cx + 26 * SS, y + 26 * SS), name, font=f_item, fill=WHITE)
+            for j, ln in enumerate(wrap(d, note, f_note, cw - 52 * SS)):
+                d.text((cx + 26 * SS, y + 62 * SS + j * 26 * SS), ln, font=f_note, fill=MIST_LT)
+
+    # 中央の矢印と、途切れやすい箇所
+    mx = (lx + cw + rx) / 2
+    for i in range(3):
+        arrow(d, mx, y0 + i * (ch_ + cgap) + ch_ / 2, MIST, 22 * SS)
+
+    band_y = y0 + 3 * (ch_ + cgap) + 18 * SS
+    d.rounded_rectangle([lx, band_y, rx + cw, band_y + 84 * SS], radius=14 * SS,
+                        fill=tuple(round(c * 0.12) for c in INDIGO),
+                        outline=tuple(round(c * 0.55) for c in INDIGO), width=2 * SS)
+    d.text((lx + 28 * SS, band_y + 18 * SS),
+           "実務では、測定して結果を返すところで止まりやすい",
+           font=font(21, True), fill=INDIGO)
+    d.text((lx + 28 * SS, band_y + 50 * SS),
+           "どの結果が出たら何を検討するのかを、測定の前に決めておく必要がある",
+           font=f_note, fill=MIST)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：高年齢者の労働災害防止のための指針 第2の3・4 をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
 def main():
     web = Path(sys.argv[1])
     outdir = web / "public/images/columns"
@@ -184,6 +334,8 @@ def main():
     print("生成:")
     figure_stages(outdir / "fig-accident-stages.jpg")
     figure_traits(outdir / "fig-six-traits.jpg")
+    figure_five_measures(outdir / "fig-five-measures.jpg")
+    figure_grasp_to_action(outdir / "fig-grasp-to-action.jpg")
 
 
 if __name__ == "__main__":
