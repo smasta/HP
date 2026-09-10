@@ -840,9 +840,6 @@ export const findCaseStudy = (slug: string) =>
 export type ProfileRow = {
   label: string;
   values: string[];
-  /** 公開前に最新情報の確認が必要な項目 */
-  pending?: boolean;
-  note?: string;
   kind?: "tel" | "mail";
 };
 
@@ -859,12 +856,7 @@ export const companyProfile: ProfileRow[] = [
       "執行役員CTO　高橋 慶吾",
     ],
   },
-  {
-    label: "従業員数",
-    values: ["6名（2022年6月時点・アルバイト含む）"],
-    pending: true,
-    note: "最新の人数を確認のうえ更新",
-  },
+  { label: "従業員数", values: ["6名（2022年6月時点・アルバイト含む）"] },
   {
     label: "本店所在地",
     values: ["〒102-0072", "東京都千代田区飯田橋1-5-6 協和西ビル2階"],

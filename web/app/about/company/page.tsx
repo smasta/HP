@@ -100,19 +100,11 @@ export default function Page() {
                     row.values[0]
                   )}
 
-                  {row.pending ? (
-                    <span className="ml-3 inline-flex rounded-[3px] border border-black/15 px-1.5 py-0.5 align-middle text-[0.6rem] text-graphite-400">
-                      公開前に確認
-                    </span>
-                  ) : null}
                 </dd>
               </div>
             ))}
           </dl>
 
-          <p data-reveal className="mt-8 text-[0.72rem] leading-[1.9] text-graphite-400">
-            ※ 沿革は現在整理中です。従業員数は最新の人数を確認のうえ更新します。
-          </p>
         </div>
       </section>
 
