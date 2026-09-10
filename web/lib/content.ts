@@ -245,6 +245,7 @@ export const navItems: NavItem[] = [
   { label: "プロダクトサイト", en: "PRODUCTS", href: "#products", path: "/#products" },
   { label: "導入実績・事例", en: "CASE STUDIES", href: "#proof", path: "/case-studies/" },
   { label: "私たちについて", en: "ABOUT", href: "#mission", path: "/about/" },
+  { label: "コラム", en: "COLUMN", href: "#news", path: "/column/" },
   { label: "新着情報", en: "NEWS", href: "#news", path: "/news/" },
   { label: "採用情報", en: "RECRUIT", href: "#recruit", path: "/recruit/" },
   { label: "お問い合わせ", en: "CONTACT", href: "#contact", path: "/contact/" },

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { columnCategories, columns } from "@/lib/columns";
 import { news, newsCategories } from "@/lib/content";
 import { subPolicies } from "@/lib/policies";
 import { SITE_URL } from "@/lib/seo";
@@ -84,6 +85,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.5,
+    });
+  });
+
+  // コラム（一覧・カテゴリ・記事）
+  entries.push({
+    url: url("/column/"),
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  });
+  columnCategories.forEach((category) => {
+    entries.push({
+      url: url(`/column/category/${category.key}/`),
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.6,
+    });
+  });
+  columns.forEach((item) => {
+    entries.push({
+      url: url(`/column/${item.slug}/`),
+      lastModified: new Date(item.updatedAt ?? item.publishedAt),
+      changeFrequency: "monthly",
+      priority: 0.7,
     });
   });
 
