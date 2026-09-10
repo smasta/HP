@@ -123,6 +123,12 @@ export type Reviewer = {
 
 export type ColumnItem = {
   slug: string;
+  /**
+   * 監修前の初稿。true の間はサイトに出さない。
+   * 自動生成した記事が監修を経ずに公開されるのを防ぐための仕組み。
+   * 監修が済んだら false にするか、この行を削除する。
+   */
+  draft?: boolean;
   category: ColumnCategoryKey;
   title: string;
   /** SERPで切れないよう短くした検索結果用タイトル（任意） */
@@ -147,10 +153,13 @@ export type ColumnItem = {
 
 const raw = columnData as ColumnItem[];
 
-/** 公開日の新しい順 */
+/** 公開済みの記事のみ。draft は一覧・記事ページ・サイトマップのいずれにも出さない */
 export const columns = raw
-  .slice()
+  .filter((item) => !item.draft)
   .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
+
+/** 監修待ちの初稿。公開はされないが、進捗の確認に使う */
+export const columnDrafts = raw.filter((item) => item.draft);
 
 export const columnPath = (item: Pick<ColumnItem, "slug">) =>
   `/column/${item.slug}/`;
