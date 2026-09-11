@@ -173,9 +173,73 @@ def kv_five_measures(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_old_vs_new(out):
+    """旧ガイドラインの3項目から、新しい指針の6項目へ広がったことを絵にする。
+    左に旧の3本（薄く）、矢印、右に新の6本。引き継がれた3本は EMERALD、
+    新たに明記された3本（バランス能力・感覚機能・認知機能＝2,5,6番目）は INDIGO"""
+    added = [False, True, False, False, True, True]
+
+    slot_w, gap = 64 * SS, 22 * SS
+    old_n, new_n = 3, 6
+    old_total = old_n * slot_w + (old_n - 1) * gap
+    new_total = new_n * slot_w + (new_n - 1) * gap
+    mid_gap = 120 * SS
+    total = old_total + mid_gap + new_total
+    x_old = (CW - total) / 2
+    x_new = x_old + old_total + mid_gap
+    top, bottom = 206 * SS, 424 * SS
+    radius = 12 * SS
+
+    img = base()
+
+    def shapes(d):
+        for i in range(new_n):
+            x = x_new + i * (slot_w + gap)
+            accent = INDIGO if added[i] else EMERALD
+            d.rounded_rectangle([x, top, x + slot_w, bottom], radius=radius,
+                                fill=tuple(round(c * (0.6 if added[i] else 0.4)) for c in accent))
+    img = glow(img, shapes, blur=26, strength=0.85)
+
+    d = ImageDraw.Draw(img)
+
+    # 旧：引き継がれた側なので EMERALD を薄く。廃止済みであることを輪郭の弱さで示す
+    for i in range(old_n):
+        x = x_old + i * (slot_w + gap)
+        d.rounded_rectangle([x, top, x + slot_w, bottom], radius=radius,
+                            fill=tuple(round(c * 0.16) for c in EMERALD),
+                            outline=tuple(round(c * 0.45) for c in EMERALD),
+                            width=2 * SS)
+
+    # 矢印
+    ax = x_old + old_total + mid_gap / 2
+    ay = (top + bottom) / 2
+    rule = tuple(round(c * 0.8) for c in MIST)
+    d.line([(ax - 26 * SS, ay), (ax + 14 * SS, ay)], fill=rule, width=3 * SS)
+    d.polygon([(ax + 28 * SS, ay), (ax + 8 * SS, ay - 14 * SS), (ax + 8 * SS, ay + 14 * SS)],
+              fill=rule)
+
+    # 新：6本。加わった3本を強く
+    for i in range(new_n):
+        x = x_new + i * (slot_w + gap)
+        accent = INDIGO if added[i] else EMERALD
+        layer, mask, pos = gradient_bar([x, top, x + slot_w, bottom],
+                                        accent, lerp(accent, INK_SOFT, 0.5 if added[i] else 0.65),
+                                        radius)
+        img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+
+    # 土台。左右で別の文書であることを、切れた土台で示す
+    for (x0, w) in [(x_old, old_total), (x_new, new_total)]:
+        d.rounded_rectangle([x0 - 22 * SS, bottom + 22 * SS, x0 + w + 22 * SS, bottom + 28 * SS],
+                            radius=3 * SS, fill=tuple(round(c * 0.6) for c in MIST))
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
+    "revised-safety-act-2026-vs-old-guideline": kv_old_vs_new,
 }
 
 

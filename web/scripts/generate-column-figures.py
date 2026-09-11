@@ -327,6 +327,152 @@ def figure_grasp_to_action(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------ 図5
+def figure_traits_old_vs_new(out):
+    """旧ガイドラインと新しい指針で、作業管理で考慮すべき特性の列挙がどう変わったか"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "作業管理で考慮すべき特性——旧ガイドラインと新しい指針",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "3項目の「体力の低下」から、感覚機能・認知機能を含む6項目へ",
+           font=font(19), fill=MIST)
+
+    f_head = font(22, True)
+    f_sub = font(17)
+    f_item = font(22, True)
+
+    # 旧ガイドラインは原文の順（敏捷性・持久性・筋力）、新しい指針も原文の順
+    old = ["敏捷性", "持久性", "筋力"]
+    new = [("筋力", False), ("バランス能力", True), ("敏捷性", False),
+           ("全身持久力", False), ("感覚機能", True), ("認知機能", True)]
+
+    cw, ch_, cgap = 560 * SS, 66 * SS, 14 * SS
+    lx, rx = 92 * SS, 948 * SS
+    y0 = 262 * SS
+
+    # 左：旧ガイドライン。引き継がれた側なので EMERALD を薄く
+    d.text((lx, y0 - 50 * SS), "旧ガイドライン（2026年3月廃止）", font=f_head, fill=MIST_LT)
+    d.text((lx, y0 - 20 * SS), "基安発0316第1号 別添 第2の2(2)", font=f_sub, fill=MIST)
+    for i, name in enumerate(old):
+        y = y0 + i * (ch_ + cgap)
+        d.rounded_rectangle([lx, y, lx + cw, y + ch_], radius=14 * SS,
+                            fill=tuple(round(c * 0.10) for c in EMERALD),
+                            outline=tuple(round(c * 0.55) for c in EMERALD), width=2 * SS)
+        d.text((lx + 26 * SS, y + 18 * SS), name, font=f_item, fill=WHITE)
+    # 旧の列挙は「体力の低下」というくくりだったことを示す
+    oy = y0 + 3 * (ch_ + cgap) + 4 * SS
+    d.text((lx, oy), "「体力の低下等」として列挙", font=f_sub, fill=MIST)
+
+    # 右：新しい指針。引き継がれた項目は EMERALD、加わった項目は INDIGO
+    d.text((rx, y0 - 50 * SS), "新しい指針（2026年4月適用）", font=f_head, fill=WHITE)
+    d.text((rx, y0 - 20 * SS), "高年齢者の労働災害防止のための指針 第2の2(2)", font=f_sub, fill=MIST)
+    for i, (name, added) in enumerate(new):
+        y = y0 + i * (ch_ + cgap)
+        accent = INDIGO if added else EMERALD
+        d.rounded_rectangle([rx, y, rx + cw, y + ch_], radius=14 * SS,
+                            fill=tuple(round(c * (0.16 if added else 0.10)) for c in accent),
+                            outline=tuple(round(c * (1.0 if added else 0.55)) for c in accent),
+                            width=2 * SS)
+        d.rounded_rectangle([rx, y, rx + 5 * SS, y + ch_], radius=3 * SS, fill=accent)
+        d.text((rx + 26 * SS, y + 18 * SS), name, font=f_item, fill=WHITE)
+        if added:
+            d.text((rx + cw - 130 * SS, y + 22 * SS), "新たに明記", font=font(17, True), fill=INDIGO)
+
+    # 中央の矢印。左の3段の中心に置く
+    arrow(d, (lx + cw + rx) / 2, y0 + (3 * (ch_ + cgap) - cgap) / 2, MIST, 22 * SS)
+
+    # 凡例と出典。右列の行数から積み上げて位置を決める
+    ly = y0 + 6 * (ch_ + cgap) + 26 * SS
+    for (cx, accent, label) in [(lx, EMERALD, "旧ガイドラインから引き継がれた特性"),
+                                (lx + 480 * SS, INDIGO, "新しい指針で新たに明記された特性")]:
+        d.rounded_rectangle([cx, ly + 6 * SS, cx + 26 * SS, ly + 17 * SS], radius=5 * SS, fill=accent)
+        d.text((cx + 40 * SS, ly), label, font=font(17), fill=MIST)
+
+    d.text((92 * SS, ly + 56 * SS),
+           "出典：高年齢労働者の安全と健康確保のためのガイドライン（令和2年3月16日付け基安発0316第1号・廃止）"
+           "および高年齢者の労働災害防止のための指針（令和8年2月10日 公示第1号）をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
+# ------------------------------------------------------------------ 図6
+def figure_guideline_transition(out):
+    """旧ガイドラインから新しい指針へ。引き継がれた枠組みと、加わった部分"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "旧ガイドラインから新しい指針へ——何が引き継がれ、何が加わったか",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "5つの措置の枠組みはそのまま。根拠の格上げと、内容の具体化が加わった",
+           font=font(19), fill=MIST)
+
+    f_head = font(22, True)
+    f_sub = font(17)
+    f_item = font(19, True)
+    f_note = font(16)
+
+    cw = 560 * SS
+    lx, rx = 92 * SS, 948 * SS
+    y0 = 250 * SS
+
+    # 左：旧ガイドライン
+    d.text((lx, y0 - 50 * SS), "旧ガイドライン", font=f_head, fill=MIST_LT)
+    d.text((lx, y0 - 20 * SS), "2020年3月 安全衛生部長通達の別添", font=f_sub, fill=MIST)
+    # 右：新しい指針
+    d.text((rx, y0 - 50 * SS), "新しい指針", font=f_head, fill=WHITE)
+    d.text((rx, y0 - 20 * SS), "2026年4月 労働安全衛生法第62条の2にもとづく大臣公示", font=f_sub, fill=MIST)
+
+    # 引き継がれた枠組み（両側に同じ5段）
+    measures = ["安全衛生管理体制の確立等", "職場環境の改善", "健康や体力の状況の把握",
+                "健康や体力の状況に応じた対応", "安全衛生教育"]
+    mh, mgap = 46 * SS, 8 * SS
+    for cx in (lx, rx):
+        for i, name in enumerate(measures):
+            y = y0 + i * (mh + mgap)
+            d.rounded_rectangle([cx, y, cx + cw, y + mh], radius=12 * SS,
+                                fill=tuple(round(c * 0.10) for c in EMERALD),
+                                outline=tuple(round(c * 0.55) for c in EMERALD), width=2 * SS)
+            d.text((cx + 22 * SS, y + 11 * SS), f"{i + 1}  {name}", font=f_item, fill=WHITE)
+
+    # 右側だけに加わった部分
+    added = [
+        ("根拠が法律に置かれた", "第62条の2の努力義務を具体化。指導・援助の根拠も法律に"),
+        ("特性の列挙が6項目に", "感覚機能・認知機能を明記"),
+        ("体力チェックの具体化", "青年・壮年期からの実施、職務内容に照らした評価基準"),
+    ]
+    ah, agap = 68 * SS, 10 * SS
+    ay0 = y0 + 5 * (mh + mgap) + 16 * SS
+    for i, (name, note) in enumerate(added):
+        y = ay0 + i * (ah + agap)
+        d.rounded_rectangle([rx, y, rx + cw, y + ah], radius=12 * SS,
+                            fill=tuple(round(c * 0.16) for c in INDIGO),
+                            outline=INDIGO, width=2 * SS)
+        d.rounded_rectangle([rx, y, rx + 5 * SS, y + ah], radius=3 * SS, fill=INDIGO)
+        d.text((rx + 24 * SS, y + 11 * SS), name, font=f_item, fill=WHITE)
+        d.text((rx + 24 * SS, y + 40 * SS), note, font=f_note, fill=MIST_LT)
+
+    # 左側の同じ高さには、廃止を示す注記だけを置く
+    d.text((lx, ay0 + 12 * SS), "2026年4月1日に廃止", font=font(19, True),
+           fill=tuple(round(c * 0.9) for c in MIST))
+    d.text((lx, ay0 + 44 * SS), "現行文書として参照しない", font=f_note, fill=MIST)
+
+    # 中央の矢印は5段の枠組みの中心に
+    arrow(d, (lx + cw + rx) / 2, y0 + (5 * (mh + mgap) - mgap) / 2, MIST, 22 * SS)
+
+    ly = ay0 + 3 * (ah + agap) + 20 * SS
+    for (cx, accent, label) in [(lx, EMERALD, "引き継がれた枠組み"),
+                                (lx + 480 * SS, INDIGO, "新しい指針で加わった部分")]:
+        d.rounded_rectangle([cx, ly + 6 * SS, cx + 26 * SS, ly + 17 * SS], radius=5 * SS, fill=accent)
+        d.text((cx + 40 * SS, ly), label, font=font(17), fill=MIST)
+
+    d.text((92 * SS, ly + 56 * SS),
+           "出典：労働安全衛生法第62条の2、高年齢者の労働災害防止のための指針（令和8年2月10日 公示第1号）、"
+           "基安発0316第1号（令和2年3月16日・廃止）をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
 def main():
     web = Path(sys.argv[1])
     outdir = web / "public/images/columns"
@@ -336,6 +482,8 @@ def main():
     figure_traits(outdir / "fig-six-traits.jpg")
     figure_five_measures(outdir / "fig-five-measures.jpg")
     figure_grasp_to_action(outdir / "fig-grasp-to-action.jpg")
+    figure_traits_old_vs_new(outdir / "fig-traits-old-vs-new.jpg")
+    figure_guideline_transition(outdir / "fig-guideline-transition.jpg")
 
 
 if __name__ == "__main__":
