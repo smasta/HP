@@ -352,7 +352,7 @@ def figure_traits_old_vs_new(out):
     y0 = 262 * SS
 
     # 左：旧ガイドライン。引き継がれた側なので EMERALD を薄く
-    d.text((lx, y0 - 50 * SS), "旧ガイドライン（2026年3月廃止）", font=f_head, fill=MIST_LT)
+    d.text((lx, y0 - 50 * SS), "旧ガイドライン（2026年4月1日廃止）", font=f_head, fill=MIST_LT)
     d.text((lx, y0 - 20 * SS), "基安発0316第1号 別添 第2の2(2)", font=f_sub, fill=MIST)
     for i, name in enumerate(old):
         y = y0 + i * (ch_ + cgap)
