@@ -4,6 +4,9 @@ import type { Metadata } from "next";
 export const SITE_URL = "https://smasta.co.jp";
 export const SITE_NAME = "SMARTSTART";
 
+/** Google アナリティクス（GA4）の測定ID。公開値なので環境変数にはしない */
+export const GA_MEASUREMENT_ID = "G-DTFCE8QMDR";
+
 /** SNS共有画像（1200×630）。差し替える場合は public/ のファイルとここを合わせる。 */
 export const OG_IMAGE = {
   url: "/og.jpg",

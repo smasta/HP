@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { REAXION_CLOUD_URL, REAXION_INSTAGRAM_URL, REAXION_STORE_URL, brand } from "@/lib/content";
 import {
+  GA_MEASUREMENT_ID,
   OG_IMAGE,
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -136,6 +138,17 @@ export default function RootLayout({
           本文へスキップ
         </a>
         {children}
+        {/* Google アナリティクス（GA4）。ページ遷移の計測は GA 側の拡張計測に任せる */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_MEASUREMENT_ID}');`}
+        </Script>
       </body>
     </html>
   );
