@@ -473,6 +473,167 @@ def figure_guideline_transition(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------ 図7
+def figure_age_lines(out):
+    """制度ごとに異なる「高年齢」の線を、年齢の目盛りの上に並べる。
+    安衛法第62条の2 には線がないことを、空いた段で示す"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "制度ごとに異なる「高年齢」の線", font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "労働安全衛生法第62条の2は、このどれも採用していない",
+           font=font(19), fill=MIST)
+
+    f_tick = font(22, True)
+    f_item = font(18, True)
+    f_note = font(15)
+
+    # 年齢の目盛り。40〜75歳を横に取る
+    ax0, ax1 = 92 * SS, 1508 * SS
+    a_min, a_max = 40, 75
+    axis_y = 300 * SS
+
+    def xa(age):
+        return ax0 + (ax1 - ax0) * (age - a_min) / (a_max - a_min)
+
+    d.line([(ax0, axis_y), (ax1, axis_y)], fill=tuple(round(c * 0.8) for c in MIST), width=2 * SS)
+    for age in range(40, 80, 5):
+        x = xa(age)
+        d.line([(x, axis_y - 8 * SS), (x, axis_y + 8 * SS)], fill=MIST, width=2 * SS)
+        tb = d.textbbox((0, 0), f"{age}歳", font=f_tick)
+        d.text((x - (tb[2] - tb[0]) / 2, axis_y - 48 * SS), f"{age}歳", font=f_tick, fill=MIST_LT)
+
+    # 各制度の線。上から順に置き、同じ年齢は縦に並ぶ
+    lines = [
+        (45, "中高年齢者（高年齢者雇用安定法）", "施行規則 第2条"),
+        (55, "高年齢者（高年齢者雇用安定法）", "施行規則 第1条"),
+        (60, "定年の下限 / 労災統計の区分 / 補助金の対象", "雇用安定法 第8条 ほか"),
+        (65, "雇用確保措置 / 雇用保険の高年齢被保険者", "雇用安定法 第9条、雇用保険法 第37条の2"),
+        (70, "就業確保措置（努力義務）", "雇用安定法 第10条の2"),
+    ]
+    row_h = 74 * SS
+    y0 = axis_y + 36 * SS
+    for i, (age, label, note) in enumerate(lines):
+        y = y0 + i * row_h
+        x = xa(age)
+        accent = lerp(EMERALD, INDIGO, i / (len(lines) - 1))
+        # 目盛りから下りてくる縦線
+        d.line([(x, axis_y + 10 * SS), (x, y + 18 * SS)],
+               fill=tuple(round(c * 0.55) for c in accent), width=2 * SS)
+        d.ellipse([x - 9 * SS, y + 9 * SS, x + 9 * SS, y + 27 * SS], fill=accent)
+        # ラベルは線の右に置く。右端に近いものは左に
+        lw = d.textlength(label, font=f_item)
+        tx = x + 22 * SS if x + 22 * SS + lw < ax1 else x - 22 * SS - lw
+        d.text((tx, y + 4 * SS), label, font=f_item, fill=WHITE)
+        d.text((tx, y + 34 * SS), note, font=f_note, fill=MIST)
+
+    # 安衛法第62条の2 の段。線がないことを示す
+    y = y0 + len(lines) * row_h + 14 * SS
+    d.rounded_rectangle([ax0, y, ax1, y + 70 * SS], radius=14 * SS,
+                        fill=tuple(round(c * 0.12) for c in INDIGO),
+                        outline=tuple(round(c * 0.6) for c in INDIGO), width=2 * SS)
+    d.text((ax0 + 28 * SS, y + 12 * SS), "労働安全衛生法 第62条の2（高年齢者の労働災害防止のための措置）",
+           font=font(20, True), fill=INDIGO)
+    d.text((ax0 + 28 * SS, y + 42 * SS),
+           "年齢の定めなし。「各事業場における高年齢者の就労状況や業務の内容等の実情に応じて」対象を決める",
+           font=f_note, fill=MIST_LT)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：高年齢者等の雇用の安定等に関する法律および同法施行規則、雇用保険法、"
+           "労働安全衛生法、令和8年度エイジフレンドリー補助金のご案内をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
+# ------------------------------------------------------------------ 図8
+def figure_age_vs_traits(out):
+    """年齢で線を引く考え方と、特性を把握する考え方の対比"""
+    import random
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "年齢で線を引くか、特性を把握するか", font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "年齢は対象を絞る入口。配慮の中身は、個人の特性の把握にもとづいて決める",
+           font=font(19), fill=MIST)
+
+    f_head = font(22, True)
+    f_sub = font(17)
+    f_item = font(19, True)
+
+    cw, ch_ = 640 * SS, 470 * SS
+    lx, rx = 92 * SS, 868 * SS
+    y0 = 218 * SS
+
+    # 左：年齢の線。同じ年齢でも状態に幅があることを点のばらつきで示す
+    d.rounded_rectangle([lx, y0, lx + cw, y0 + ch_], radius=18 * SS,
+                        fill=tuple(round(c * 0.10) for c in EMERALD),
+                        outline=tuple(round(c * 0.55) for c in EMERALD), width=2 * SS)
+    d.text((lx + 28 * SS, y0 + 22 * SS), "年齢で線を引く", font=f_head, fill=WHITE)
+    d.text((lx + 28 * SS, y0 + 56 * SS), "集団のリスクを示す目安。個人の状態は表さない", font=f_sub, fill=MIST)
+
+    px0, px1 = lx + 60 * SS, lx + cw - 60 * SS
+    py0, py1 = y0 + 120 * SS, y0 + ch_ - 90 * SS
+    d.line([(px0, py1), (px1, py1)], fill=MIST, width=2 * SS)
+    d.line([(px0, py0), (px0, py1)], fill=MIST, width=2 * SS)
+    d.text((px1 - 40 * SS, py1 + 12 * SS), "年齢", font=f_sub, fill=MIST)
+    d.text((px0 - 4 * SS, py0 - 30 * SS), "特性の状態", font=f_sub, fill=MIST)
+
+    rnd = random.Random(7)
+    for k in range(90):
+        t = rnd.random()
+        x = px0 + (px1 - px0) * t
+        # 年齢とともに緩やかに下がるが、ばらつきが大きい
+        mean = py0 + (py1 - py0) * (0.30 + 0.45 * t)
+        y = mean + rnd.gauss(0, (py1 - py0) * 0.13)
+        y = max(py0 + 8 * SS, min(py1 - 8 * SS, y))
+        d.ellipse([x - 5 * SS, y - 5 * SS, x + 5 * SS, y + 5 * SS],
+                  fill=tuple(round(c * 0.85) for c in MIST_LT))
+    # 一本の縦線
+    vx = px0 + (px1 - px0) * 0.62
+    for y in range(round(py0), round(py1), 14 * SS):
+        d.line([(vx, y), (vx, y + 7 * SS)], fill=EMERALD, width=3 * SS)
+    d.text((vx + 12 * SS, py0 + 4 * SS), "60歳", font=f_item, fill=EMERALD)
+    d.text((lx + 28 * SS, y0 + ch_ - 52 * SS), "線の左右で、状態の分布は大きく重なっている",
+           font=f_sub, fill=MIST_LT)
+
+    # 右：6つの特性を測る
+    d.rounded_rectangle([rx, y0, rx + cw, y0 + ch_], radius=18 * SS,
+                        fill=tuple(round(c * 0.14) for c in INDIGO),
+                        outline=INDIGO, width=2 * SS)
+    d.text((rx + 28 * SS, y0 + 22 * SS), "特性を把握する", font=f_head, fill=WHITE)
+    d.text((rx + 28 * SS, y0 + 56 * SS), "指針が列挙した6つの特性を、個人ごとに測る", font=f_sub, fill=MIST)
+
+    traits = [("筋力", True), ("バランス能力", True), ("敏捷性", False),
+              ("全身持久力", True), ("感覚機能", False), ("認知機能", False)]
+    tw, th, tgap = 280 * SS, 60 * SS, 14 * SS
+    for i, (name, covered) in enumerate(traits):
+        col, row = i % 2, i // 2
+        x = rx + 28 * SS + col * (tw + tgap)
+        y = y0 + 106 * SS + row * (th + tgap)
+        accent = EMERALD if covered else INDIGO
+        d.rounded_rectangle([x, y, x + tw, y + th], radius=12 * SS,
+                            fill=tuple(round(c * (0.14 if covered else 0.22)) for c in accent),
+                            outline=tuple(round(c * (0.6 if covered else 1.0)) for c in accent),
+                            width=2 * SS)
+        d.rounded_rectangle([x, y, x + 5 * SS, y + th], radius=3 * SS, fill=accent)
+        d.text((x + 22 * SS, y + 16 * SS), name, font=f_item, fill=WHITE)
+
+    ly = y0 + 106 * SS + 3 * (th + tgap) + 10 * SS
+    d.rounded_rectangle([rx + 28 * SS, ly + 6 * SS, rx + 54 * SS, ly + 17 * SS], radius=5 * SS, fill=EMERALD)
+    d.text((rx + 68 * SS, ly), "一般的な体力チェックで把握できる", font=font(16), fill=MIST)
+    d.rounded_rectangle([rx + 28 * SS, ly + 38 * SS, rx + 54 * SS, ly + 49 * SS], radius=5 * SS, fill=INDIGO)
+    d.text((rx + 68 * SS, ly + 32 * SS), "体力チェックでは捉えにくく、別の測定が要る", font=font(16), fill=MIST)
+    d.text((rx + 28 * SS, y0 + ch_ - 52 * SS), "結果にもとづいて、就業上の措置や業務のマッチングを検討する",
+           font=f_sub, fill=MIST_LT)
+
+    arrow(d, (lx + cw + rx) / 2, y0 + ch_ / 2, MIST, 22 * SS)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：高年齢者の労働災害防止のための指針 第2の2(2)・第2の3(2) をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
 def main():
     web = Path(sys.argv[1])
     outdir = web / "public/images/columns"
@@ -484,6 +645,8 @@ def main():
     figure_grasp_to_action(outdir / "fig-grasp-to-action.jpg")
     figure_traits_old_vs_new(outdir / "fig-traits-old-vs-new.jpg")
     figure_guideline_transition(outdir / "fig-guideline-transition.jpg")
+    figure_age_lines(outdir / "fig-age-lines.jpg")
+    figure_age_vs_traits(outdir / "fig-age-vs-traits.jpg")
 
 
 if __name__ == "__main__":

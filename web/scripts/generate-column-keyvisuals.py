@@ -236,10 +236,65 @@ def kv_old_vs_new(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_target_age(out):
+    """「何歳から」に線はない、を絵にする。
+    年齢階層ごとに段階的に高くなる柱を並べ（統計の千人率の形）、
+    その途中に一本の破線を引いても柱の高さに段差がないことを示す。
+    破線より右（高年齢側）は INDIGO、左は EMERALD で、線の前後で連続していることを色の連なりで見せる"""
+    n = 11
+    slot_w, gap = 62 * SS, 26 * SS
+    total = n * slot_w + (n - 1) * gap
+    x0 = (CW - total) / 2
+    bottom = 452 * SS
+    # 20代後半を底に、緩やかに上がる。急な段差は作らない
+    heights = [118, 104, 112, 128, 148, 168, 190, 214, 236, 256, 272]
+    radius = 12 * SS
+    line_at = 7  # この柱の左に破線を置く（「60歳」に相当する位置）
+
+    def bars():
+        for i, h in enumerate(heights):
+            x = x0 + i * (slot_w + gap)
+            yield i, x, bottom - h * SS
+
+    img = base()
+
+    def shapes(d):
+        for i, x, y in bars():
+            accent = lerp(EMERALD, INDIGO, i / (n - 1))
+            d.rounded_rectangle([x, y, x + slot_w, bottom], radius=radius,
+                                fill=tuple(round(c * 0.42) for c in accent))
+    img = glow(img, shapes, blur=26, strength=0.8)
+
+    d = ImageDraw.Draw(img)
+
+    for i, x, y in bars():
+        accent = lerp(EMERALD, INDIGO, i / (n - 1))
+        layer, mask, pos = gradient_bar([x, y, x + slot_w, bottom],
+                                        accent, lerp(accent, INK_SOFT, 0.6), radius)
+        img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+
+    # 一本の破線。柱の並びを横切るが、その左右で高さは連続している
+    lx = x0 + line_at * (slot_w + gap) - gap / 2
+    rule = tuple(round(c * 0.9) for c in MIST)
+    for y in range(round(bottom - 300 * SS), round(bottom + 12 * SS), 16 * SS):
+        d.line([(lx, y), (lx, y + 8 * SS)], fill=rule, width=3 * SS)
+
+    # 柱の頂点をなぞる線。段差がないことを一筆で示す
+    pts = [(x + slot_w / 2, y) for _, x, y in bars()]
+    d.line(pts, fill=(255, 255, 255), width=3 * SS, joint="curve")
+
+    d.rounded_rectangle([x0 - 34 * SS, bottom + 22 * SS, x0 + total + 34 * SS, bottom + 28 * SS],
+                        radius=3 * SS, fill=tuple(round(c * 0.6) for c in MIST))
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
     "revised-safety-act-2026-vs-old-guideline": kv_old_vs_new,
+    "safety-act-62-2-target-age": kv_target_age,
 }
 
 
