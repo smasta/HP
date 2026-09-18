@@ -290,11 +290,60 @@ def kv_target_age(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_accidents_increasing(out):
+    """死傷者数が増え、そのなかで60歳以上の占める部分が広がっていくことを絵にする。
+    年を追って高くなる柱を並べ、上部の INDIGO（60歳以上）の割合が徐々に大きくなる。
+    下部の EMERALD（60歳未満）はほぼ変わらず、増えた分は上部で埋まっている"""
+    n = 10
+    slot_w, gap = 72 * SS, 26 * SS
+    total = n * slot_w + (n - 1) * gap
+    x0 = (CW - total) / 2
+    bottom = 452 * SS
+    # 全体はゆるやかに増え、60歳以上の割合は 0.22 → 0.31 へ
+    heights = [196, 204, 208, 214, 218, 226, 236, 246, 254, 258]
+    shares = [0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.30, 0.31]
+    radius = 12 * SS
+
+    def bars():
+        for i, (h, s) in enumerate(zip(heights, shares)):
+            x = x0 + i * (slot_w + gap)
+            top = bottom - h * SS
+            split = bottom - h * (1 - s) * SS
+            yield i, x, top, split
+
+    img = base()
+
+    def shapes(d):
+        for _, x, top, split in bars():
+            d.rounded_rectangle([x, top, x + slot_w, split + radius], radius=radius,
+                                fill=tuple(round(c * 0.55) for c in INDIGO))
+    img = glow(img, shapes, blur=26, strength=0.85)
+
+    d = ImageDraw.Draw(img)
+    for _, x, top, split in bars():
+        # 下部：60歳未満。ほぼ一定なので落ち着いた色
+        layer, mask, pos = gradient_bar([x, split, x + slot_w, bottom],
+                                        lerp(EMERALD, INK_SOFT, 0.45), lerp(EMERALD, INK_SOFT, 0.7),
+                                        radius)
+        img.paste(layer, pos, mask)
+        # 上部：60歳以上。増えていく部分なので強く
+        layer, mask, pos = gradient_bar([x, top, x + slot_w, split - 4 * SS],
+                                        INDIGO, lerp(INDIGO, INK_SOFT, 0.4), radius)
+        img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+
+    d.rounded_rectangle([x0 - 34 * SS, bottom + 22 * SS, x0 + total + 34 * SS, bottom + 28 * SS],
+                        radius=3 * SS, fill=tuple(round(c * 0.6) for c in MIST))
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
     "revised-safety-act-2026-vs-old-guideline": kv_old_vs_new,
     "safety-act-62-2-target-age": kv_target_age,
+    "elderly-worker-accidents-why-increasing": kv_accidents_increasing,
 }
 
 

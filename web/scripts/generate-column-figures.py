@@ -634,6 +634,138 @@ def figure_age_vs_traits(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------ 図9
+def figure_age_adjusted_rate(out):
+    """死傷度数率の実際の値と年齢調整値を並べ、高齢化による上振れ分を示す。
+    値は厚労省「令和6年労働災害発生状況について」の計算例の表から（男女計）"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "死傷度数率の上昇のうち、年齢構成の変化で説明できる部分",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "平成27年の年齢構成に固定して計算し直すと、上昇の一部は残り、一部は消える",
+           font=font(19), fill=MIST)
+
+    years = ["平成27年", "平成28年", "令和5年", "令和6年"]
+    actual = [1.081, 1.080, 1.229, 1.237]
+    adjusted = [1.081, 1.074, 1.158, 1.161]
+
+    f_tick = font(19, True)
+    f_val = font(20, True)
+    f_leg = font(18)
+
+    # 縦軸は 1.00〜1.30 に絞り、差が見えるようにする
+    # 右端に差の注記を置く余白を残す
+    ax0, ax1 = 200 * SS, 1300 * SS
+    ay0, ay1 = 236 * SS, 640 * SS
+    v_min, v_max = 1.00, 1.30
+
+    def ya(v):
+        return ay1 - (ay1 - ay0) * (v - v_min) / (v_max - v_min)
+
+    rule = tuple(round(c * 0.4) for c in MIST)
+    for v in [1.00, 1.10, 1.20, 1.30]:
+        y = ya(v)
+        d.line([(ax0, y), (ax1, y)], fill=rule, width=SS)
+        tb = d.textbbox((0, 0), f"{v:.2f}", font=f_tick)
+        d.text((ax0 - 24 * SS - (tb[2] - tb[0]), y - 13 * SS), f"{v:.2f}", font=f_tick, fill=MIST)
+
+    slot = (ax1 - ax0) / len(years)
+    bw, bg = 118 * SS, 18 * SS
+    for i, yr in enumerate(years):
+        cx = ax0 + slot * (i + 0.5)
+        tb = d.textbbox((0, 0), yr, font=f_tick)
+        d.text((cx - (tb[2] - tb[0]) / 2, ay1 + 18 * SS), yr, font=f_tick, fill=MIST_LT)
+        for j, (v, accent) in enumerate([(actual[i], INDIGO), (adjusted[i], EMERALD)]):
+            x = cx - bw - bg / 2 + j * (bw + bg)
+            d.rounded_rectangle([x, ya(v), x + bw, ay1], radius=10 * SS,
+                                fill=tuple(round(c * (0.85 if j == 0 else 0.7)) for c in accent))
+            tv = d.textbbox((0, 0), f"{v:.3f}", font=f_val)
+            d.text((x + bw / 2 - (tv[2] - tv[0]) / 2, ya(v) - 32 * SS), f"{v:.3f}",
+                   font=f_val, fill=WHITE)
+        # 実際の値と調整値の差を、最後の年だけ注記する
+        if i == len(years) - 1:
+            x = cx + bg / 2 + bw + 14 * SS
+            top, bot = ya(actual[i]), ya(adjusted[i])
+            d.line([(x, top), (x, bot)], fill=MIST_LT, width=2 * SS)
+            for k, ln in enumerate(["労働者の高齢化", "による上振れ"]):
+                d.text((x + 14 * SS, (top + bot) / 2 - 22 * SS + k * 24 * SS), ln,
+                       font=font(16, True), fill=MIST_LT)
+
+    ly = ay1 + 64 * SS
+    for (cx, accent, label) in [(ax0, INDIGO, "死傷度数率（実際の値）"),
+                                (ax0 + 400 * SS, EMERALD, "年齢調整値（平成27年の年齢構成に固定）")]:
+        d.rounded_rectangle([cx, ly + 6 * SS, cx + 26 * SS, ly + 17 * SS], radius=5 * SS, fill=accent)
+        d.text((cx + 40 * SS, ly), label, font=f_leg, fill=MIST)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：厚生労働省「令和6年労働災害発生状況について」（令和7年5月30日）の年齢調整の計算例（男女計）をもとに作成。"
+           "度数率＝死傷者数÷延べ労働時間数×1,000,000",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
+# ------------------------------------------------------------------ 図10
+def figure_rate_by_age(out):
+    """令和6年の年齢階層別の死傷度数率。20代後半を底にした形を見せる"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "年齢階層別の死傷度数率（令和6年・男女計）",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "25〜29歳を底に年齢とともに上がり、65歳以上で急に高くなる。19歳以下も高い",
+           font=font(19), fill=MIST)
+
+    bands = ["19歳\n以下", "20〜\n24", "25〜\n29", "30〜\n34", "35〜\n39", "40〜\n44",
+             "45〜\n49", "50〜\n54", "55〜\n59", "60〜\n64", "65〜\n69", "70〜\n74", "75歳\n以上"]
+    values = [2.236, 1.092, 0.709, 0.713, 0.783, 0.858, 0.986,
+              1.228, 1.559, 1.935, 2.652, 3.079, 3.236]
+
+    f_tick = font(17, True)
+    f_val = font(18, True)
+
+    ax0, ax1 = 160 * SS, 1508 * SS
+    ay0, ay1 = 226 * SS, 640 * SS
+    v_max = 3.5
+
+    def ya(v):
+        return ay1 - (ay1 - ay0) * v / v_max
+
+    rule = tuple(round(c * 0.4) for c in MIST)
+    for v in [0, 1, 2, 3]:
+        y = ya(v)
+        d.line([(ax0, y), (ax1, y)], fill=rule, width=SS)
+        tb = d.textbbox((0, 0), f"{v:.1f}", font=f_tick)
+        d.text((ax0 - 22 * SS - (tb[2] - tb[0]), y - 12 * SS), f"{v:.1f}", font=f_tick, fill=MIST)
+
+    slot = (ax1 - ax0) / len(bands)
+    bw = slot * 0.62
+    for i, (label, v) in enumerate(zip(bands, values)):
+        cx = ax0 + slot * (i + 0.5)
+        # 60歳以上を INDIGO、それ以外を EMERALD で塗り分ける
+        accent = INDIGO if i >= 9 else EMERALD
+        d.rounded_rectangle([cx - bw / 2, ya(v), cx + bw / 2, ay1], radius=8 * SS,
+                            fill=tuple(round(c * 0.8) for c in accent))
+        tv = d.textbbox((0, 0), f"{v:.3f}", font=f_val)
+        d.text((cx - (tv[2] - tv[0]) / 2, ya(v) - 30 * SS), f"{v:.3f}", font=f_val, fill=WHITE)
+        for k, ln in enumerate(label.split("\n")):
+            tb = d.textbbox((0, 0), ln, font=f_tick)
+            d.text((cx - (tb[2] - tb[0]) / 2, ay1 + 14 * SS + k * 24 * SS), ln, font=f_tick, fill=MIST_LT)
+
+    # 60歳以上の範囲を示す帯
+    x60 = ax0 + slot * 9
+    d.rounded_rectangle([x60, ay1 + 70 * SS, ax1, ay1 + 76 * SS], radius=3 * SS, fill=INDIGO)
+    # 右端で切れないよう、帯の右端にそろえる
+    label = "60歳以上：死傷年千人率 4.00（30代比 男性約2倍・女性約5倍）"
+    d.text((ax1 - d.textlength(label, font=font(17, True)), ay1 + 86 * SS), label,
+           font=font(17, True), fill=INDIGO)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：厚生労働省「令和6年労働災害発生状況について」（令和7年5月30日）の年齢階級別労働災害発生率（度数率）をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
 def main():
     web = Path(sys.argv[1])
     outdir = web / "public/images/columns"
@@ -647,6 +779,8 @@ def main():
     figure_guideline_transition(outdir / "fig-guideline-transition.jpg")
     figure_age_lines(outdir / "fig-age-lines.jpg")
     figure_age_vs_traits(outdir / "fig-age-vs-traits.jpg")
+    figure_age_adjusted_rate(outdir / "fig-age-adjusted-rate.jpg")
+    figure_rate_by_age(outdir / "fig-rate-by-age.jpg")
 
 
 if __name__ == "__main__":
