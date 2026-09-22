@@ -766,6 +766,136 @@ def figure_rate_by_age(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------ 図11
+def figure_fall_patterns(out):
+    """転倒の3つのパターンごとに、厚労省が挙げる主な原因と、指針等が示す対策を対応させる"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "転倒災害の3つのパターン——原因が違えば、対策も違う",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "自社の転倒を「滑り・つまずき・踏み外し」に分けて数えることが、対策の出発点",
+           font=font(19), fill=MIST)
+
+    f_name = font(28, True)
+    f_head = font(17, True)
+    f_item = font(17)
+
+    rows = [
+        ("滑り",
+         ["床の素材、凍結", "水・油の飛散", "床に落ちたビニールや紙"],
+         ["こまめな清掃", "防滑素材の床材・シート", "床に合わせた防滑靴"]),
+        ("つまずき",
+         ["床の凹凸や段差", "通路に放置された荷物・商品"],
+         ["段差の解消、手すり", "整理・整頓（4S活動）", "屈曲性と重量に配慮した靴"]),
+        ("踏み外し",
+         ["大きな荷物を抱えるなど、", "足元が見えない状態での作業"],
+         ["重量物の小口化", "通路・階段の照度の確保", "階段の手すり"]),
+    ]
+
+    x0, y0 = 92 * SS, 210 * SS
+    rh, rgap = 146 * SS, 16 * SS
+    name_w = 250 * SS
+    col_gap = 28 * SS
+    col_w = (1416 * SS - name_w - 2 * col_gap - 60 * SS) / 2
+    cause_x = x0 + name_w
+    fix_x = cause_x + col_w + col_gap + 60 * SS
+
+    d.text((cause_x, y0 - 34 * SS), "主な原因（厚生労働省の整理）", font=f_head, fill=MIST)
+    d.text((fix_x, y0 - 34 * SS), "対策（指針・STOP！転倒災害プロジェクト）", font=f_head, fill=MIST)
+
+    for i, (name, causes, fixes) in enumerate(rows):
+        y = y0 + i * (rh + rgap)
+        # 行全体の枠
+        d.rounded_rectangle([x0, y, x0 + 1416 * SS, y + rh], radius=16 * SS,
+                            fill=tuple(round(c * 0.08) for c in MIST),
+                            outline=tuple(round(c * 0.35) for c in MIST), width=2 * SS)
+        # パターン名
+        d.rounded_rectangle([x0, y, x0 + 6 * SS, y + rh], radius=3 * SS, fill=INDIGO)
+        d.text((x0 + 30 * SS, y + 20 * SS), name, font=f_name, fill=WHITE)
+        # 原因（INDIGO）と対策（EMERALD）
+        for (cx, items, accent) in [(cause_x, causes, INDIGO), (fix_x, fixes, EMERALD)]:
+            d.rounded_rectangle([cx - 14 * SS, y + 14 * SS, cx + col_w - 14 * SS, y + rh - 14 * SS],
+                                radius=12 * SS,
+                                fill=tuple(round(c * 0.13) for c in accent),
+                                outline=tuple(round(c * 0.6) for c in accent), width=2 * SS)
+            for j, ln in enumerate(items):
+                d.text((cx + 8 * SS, y + 28 * SS + j * 30 * SS), "・" + ln, font=f_item, fill=MIST_LT)
+        # 原因→対策の矢印
+        arrow(d, cause_x + col_w + col_gap / 2 + 16 * SS, y + rh / 2, MIST, 18 * SS)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：厚生労働省「STOP！転倒災害プロジェクト」（転倒災害の原因、転倒災害防止対策のポイント、転倒防止に有効な安全靴）、"
+           "高年齢者の労働災害防止のための指針 第2の2 をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
+# ------------------------------------------------------------------ 図12
+def figure_fall_rate_by_age_sex(out):
+    """令和5年の転倒災害の死傷年千人率を男女別・年齢階層別に並べる。
+    値は厚労省「令和5年労働災害発生状況の分析等」表18から"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "転倒災害の死傷年千人率（令和5年・男女別・年齢階層別）",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "男女とも25〜29歳を底に年齢とともに上がり、女性は50代から急に高くなる",
+           font=font(19), fill=MIST)
+
+    bands = ["15〜\n19", "20〜\n24", "25〜\n29", "30〜\n34", "35〜\n39", "40〜\n44", "45〜\n49",
+             "50〜\n54", "55〜\n59", "60〜\n64", "65〜\n69", "70〜\n74", "75〜\n79歳"]
+    male = [0.280, 0.235, 0.214, 0.230, 0.263, 0.347, 0.419,
+            0.514, 0.632, 0.832, 0.982, 1.179, 1.458]
+    female = [0.219, 0.181, 0.142, 0.189, 0.196, 0.275, 0.433,
+              0.802, 1.397, 2.031, 2.643, 2.887, 2.877]
+
+    f_tick = font(17, True)
+    f_val = font(14, True)
+
+    ax0, ax1 = 160 * SS, 1508 * SS
+    ay0, ay1 = 226 * SS, 640 * SS
+    v_max = 3.2
+
+    def ya(v):
+        return ay1 - (ay1 - ay0) * v / v_max
+
+    rule = tuple(round(c * 0.4) for c in MIST)
+    for v in [0, 1, 2, 3]:
+        y = ya(v)
+        d.line([(ax0, y), (ax1, y)], fill=rule, width=SS)
+        tb = d.textbbox((0, 0), f"{v:.1f}", font=f_tick)
+        d.text((ax0 - 22 * SS - (tb[2] - tb[0]), y - 12 * SS), f"{v:.1f}", font=f_tick, fill=MIST)
+
+    slot = (ax1 - ax0) / len(bands)
+    bw, bg = slot * 0.32, slot * 0.06
+    for i, label in enumerate(bands):
+        cx = ax0 + slot * (i + 0.5)
+        for j, (v, accent) in enumerate([(male[i], EMERALD), (female[i], INDIGO)]):
+            x = cx - bw - bg / 2 + j * (bw + bg)
+            d.rounded_rectangle([x, ya(v), x + bw, ay1], radius=6 * SS,
+                                fill=tuple(round(c * 0.8) for c in accent))
+            tv = d.textbbox((0, 0), f"{v:.2f}", font=f_val)
+            d.text((x + bw / 2 - (tv[2] - tv[0]) / 2, ya(v) - 24 * SS), f"{v:.2f}",
+                   font=f_val, fill=WHITE)
+        for k, ln in enumerate(label.split("\n")):
+            tb = d.textbbox((0, 0), ln, font=f_tick)
+            d.text((cx - (tb[2] - tb[0]) / 2, ay1 + 14 * SS + k * 24 * SS), ln, font=f_tick, fill=MIST_LT)
+
+    ly = ay1 + 76 * SS
+    for (cx, accent, label) in [(ax0, EMERALD, "男性"), (ax0 + 160 * SS, INDIGO, "女性")]:
+        d.rounded_rectangle([cx, ly + 6 * SS, cx + 26 * SS, ly + 17 * SS], radius=5 * SS, fill=accent)
+        d.text((cx + 40 * SS, ly), label, font=font(18), fill=MIST)
+    d.text((ax0 + 340 * SS, ly), "女性の60〜64歳（2.031）は25〜29歳（0.142）の約14倍。男性の同じ年齢は0.832",
+           font=font(17, True), fill=INDIGO)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：厚生労働省「令和5年労働災害発生状況の分析等」表18 転倒災害の死傷年千人率をもとに作成。"
+           "死傷年千人率＝死傷者数÷労働者数×1,000（労働者数は労働力調査による）",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
 def main():
     web = Path(sys.argv[1])
     outdir = web / "public/images/columns"
@@ -781,6 +911,8 @@ def main():
     figure_age_vs_traits(outdir / "fig-age-vs-traits.jpg")
     figure_age_adjusted_rate(outdir / "fig-age-adjusted-rate.jpg")
     figure_rate_by_age(outdir / "fig-rate-by-age.jpg")
+    figure_fall_patterns(outdir / "fig-fall-patterns.jpg")
+    figure_fall_rate_by_age_sex(outdir / "fig-fall-rate-by-age-sex.jpg")
 
 
 if __name__ == "__main__":

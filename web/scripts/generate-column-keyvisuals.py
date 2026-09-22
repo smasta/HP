@@ -338,12 +338,85 @@ def kv_accidents_increasing(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_fall_patterns(out):
+    """転倒は「危険に感じられない場所」で起きる、を絵にする。
+    床の上に等間隔で立つ柱の列。床にはわずかな段差が一か所だけあり、
+    その位置の柱だけが傾いている。立っている柱は EMERALD、傾いた柱は INDIGO"""
+    n = 9
+    slot_w, gap = 58 * SS, 60 * SS
+    total = n * slot_w + (n - 1) * gap
+    x0 = (CW - total) / 2
+    floor_y = 440 * SS
+    height = 210 * SS
+    radius = 12 * SS
+    fallen = 5           # この柱が傾く
+    step = 10 * SS       # 段差の高さ。「わずか」であることが要点なので小さく
+
+    def floor_at(i):
+        """段差より右は床がわずかに高い"""
+        return floor_y - (step if i >= fallen else 0)
+
+    img = base()
+
+    def shapes(d):
+        for i in range(n):
+            x = x0 + i * (slot_w + gap)
+            if i == fallen:
+                continue
+            d.rounded_rectangle([x, floor_at(i) - height, x + slot_w, floor_at(i)], radius=radius,
+                                fill=tuple(round(c * 0.4) for c in EMERALD))
+    img = glow(img, shapes, blur=26, strength=0.8)
+
+    # 傾いた柱は別レイヤーに描いて回転し、貼り付ける
+    tilt = Image.new("RGBA", (CW, CH), (0, 0, 0, 0))
+    td = ImageDraw.Draw(tilt)
+    fx = x0 + fallen * (slot_w + gap)
+    fy = floor_at(fallen)
+    layer, mask, pos = gradient_bar([fx, fy - height, fx + slot_w, fy],
+                                    INDIGO, lerp(INDIGO, INK_SOFT, 0.45), radius)
+    tilt.paste(layer.convert("RGBA"), pos, mask)
+    # 柱の足元の角を軸に、進行方向（右）へ傾ける。隣の柱に重ならない角度にとどめる
+    pivot = (fx + slot_w, fy)
+    rotated = tilt.rotate(-14, resample=Image.BICUBIC, center=pivot)
+
+    # 傾いた柱の発光
+    glow_layer = Image.new("RGB", (CW, CH), (0, 0, 0))
+    glow_layer.paste(rotated.convert("RGB"), (0, 0), rotated.split()[3])
+    glow_layer = glow_layer.filter(ImageFilter.GaussianBlur(28 * SS))
+    img = Image.blend(img, ImageChops.screen(img, glow_layer), 0.9)
+
+    d = ImageDraw.Draw(img)
+    for i in range(n):
+        if i == fallen:
+            continue
+        x = x0 + i * (slot_w + gap)
+        fy_i = floor_at(i)
+        layer, mask, pos = gradient_bar([x, fy_i - height, x + slot_w, fy_i],
+                                        EMERALD, lerp(EMERALD, INK_SOFT, 0.6), radius)
+        img.paste(layer, pos, mask)
+    img.paste(rotated.convert("RGB"), (0, 0), rotated.split()[3])
+    d = ImageDraw.Draw(img)
+
+    # 床。段差の位置で一段上がる
+    rule = tuple(round(c * 0.6) for c in MIST)
+    sx = x0 + fallen * (slot_w + gap) - gap / 2
+    d.rounded_rectangle([x0 - 34 * SS, floor_y + 22 * SS, sx, floor_y + 28 * SS],
+                        radius=3 * SS, fill=rule)
+    d.rounded_rectangle([sx, floor_y + 22 * SS - step, sx + 6 * SS, floor_y + 28 * SS],
+                        radius=3 * SS, fill=rule)
+    d.rounded_rectangle([sx, floor_y + 22 * SS - step, x0 + total + 34 * SS, floor_y + 28 * SS - step],
+                        radius=3 * SS, fill=rule)
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
     "revised-safety-act-2026-vs-old-guideline": kv_old_vs_new,
     "safety-act-62-2-target-age": kv_target_age,
     "elderly-worker-accidents-why-increasing": kv_accidents_increasing,
+    "fall-accident-patterns-and-workplace-measures": kv_fall_patterns,
 }
 
 
