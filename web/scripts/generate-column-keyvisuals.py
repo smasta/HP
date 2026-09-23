@@ -410,13 +410,61 @@ def kv_fall_patterns(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_prevention_layers(out):
+    """転倒対策は優先順位の順に積み上がるが、その土台が空いている、を絵にする。
+    上から 設備（工学的対策）・管理的対策・個人用装備 の3層が EMERALD で積まれ、
+    priority が下がるほど暗くなる。一番下の土台＝身体の側の把握は INDIGO の輪郭だけ。
+    輪郭だけの表現は kv_fitness_check と同じ「空き」の記法"""
+    bar_w, bar_h, gap = 760 * SS, 74 * SS, 24 * SS
+    base_w, base_h = 860 * SS, 84 * SS
+    top_y = 118 * SS
+    base_y = 428 * SS
+    radius = 14 * SS
+    n = 3
+
+    bx = (CW - bar_w) / 2
+    cx0 = (CW - base_w) / 2
+
+    def rows():
+        for i in range(n):
+            y = top_y + i * (bar_h + gap)
+            yield i, (bx, y, bx + bar_w, y + bar_h)
+
+    def accent(i):
+        # 上の層ほど効果が広く及ぶ。下に行くほど落とす
+        return lerp(EMERALD, INK_SOFT, i * 0.34)
+
+    img = base()
+
+    def shapes(d):
+        for i, box in rows():
+            d.rounded_rectangle(box, radius=radius,
+                                fill=tuple(round(c * 0.46) for c in accent(i)))
+    img = glow(img, shapes, blur=26, strength=0.82)
+
+    for i, box in rows():
+        a = accent(i)
+        layer, mask, pos = gradient_bar(box, a, lerp(a, INK_SOFT, 0.6), radius)
+        img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+
+    # 土台は輪郭だけ。ここが手つかずであることが要点
+    d.rounded_rectangle([cx0, base_y, cx0 + base_w, base_y + base_h], radius=radius,
+                        fill=tuple(round(c * 0.10) for c in INDIGO),
+                        outline=tuple(round(c * 0.66) for c in INDIGO),
+                        width=2 * SS)
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
     "revised-safety-act-2026-vs-old-guideline": kv_old_vs_new,
     "safety-act-62-2-target-age": kv_target_age,
     "elderly-worker-accidents-why-increasing": kv_accidents_increasing,
-    "fall-accident-patterns-and-workplace-measures": kv_fall_patterns,
+    "fall-accident-patterns": kv_fall_patterns,
+    "fall-prevention-workplace-measures": kv_prevention_layers,
 }
 
 
