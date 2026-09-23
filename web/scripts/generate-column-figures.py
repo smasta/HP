@@ -756,7 +756,7 @@ def figure_rate_by_age(out):
     x60 = ax0 + slot * 9
     d.rounded_rectangle([x60, ay1 + 70 * SS, ax1, ay1 + 76 * SS], radius=3 * SS, fill=INDIGO)
     # 右端で切れないよう、帯の右端にそろえる
-    label = "60歳以上：死傷年千人率 4.00（30代比 男性約2倍・女性約5倍）"
+    label = "60歳以上：死傷度数率 2.41（30代比 男性約2倍・女性約5倍）"
     d.text((ax1 - d.textlength(label, font=font(17, True)), ay1 + 86 * SS), label,
            font=font(17, True), fill=INDIGO)
 
@@ -896,6 +896,167 @@ def figure_fall_rate_by_age_sex(out):
     save(img, out)
 
 
+def figure_fall_measure_order(out):
+    """指針が示すリスク低減措置の優先順位（ア〜エ）と、それが転倒対策では何にあたるか。
+    上の措置ほど危険そのものを取り除き、下に行くほど労働者の注意と装備に依存する。
+    その依存の度合いを、左の背骨の EMERALD→INDIGO のグラデーションで示す"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "転倒対策の優先順位——指針が示すリスク低減措置の順序",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS),
+           "上の措置ほど危険そのものを取り除く。下に行くほど労働者の注意と装備に依存する",
+           font=font(19), fill=MIST)
+
+    # 原文表記のまま。要約しない
+    rows = [
+        ("ア", "危険な作業の廃止・変更等、設計や計画の\n段階から危険性又は有害性を除去又は低減",
+         "危険な作業そのものをなくす、\n作業の順序や動線を変える"),
+        ("イ", "手すりの設置や段差の解消等の工学的対策",
+         "段差の解消、手すり、防滑素材、\n照度の確保、滑りにくいマット"),
+        ("ウ", "マニュアルの整備等の管理的対策",
+         "4S活動、作業方法の見直し、\n危険マップとステッカーによる見える化"),
+        ("エ", "身体負荷を軽減する個人用の装備の使用",
+         "床の滑りやすさに合わせた防滑靴"),
+    ]
+
+    x_spine = 108 * SS
+    x_badge = 166 * SS
+    x_gen = 236 * SS
+    x_div = 924 * SS
+    x_ex = 964 * SS
+    top, row_h, gap = 212 * SS, 122 * SS, 22 * SS
+
+    f_gen = font(20, True)
+    f_ex = font(19)
+    f_badge = font(21, True)
+
+    # 左の背骨。上から下へ依存が大きくなることを一続きで示す
+    y_end = top + len(rows) * (row_h + gap) - gap
+    for y in range(round(top), round(y_end)):
+        t = (y - top) / (y_end - top)
+        d.line([(x_spine, y), (x_spine + 14 * SS, y)], fill=lerp(EMERALD, INDIGO, t))
+
+    for i, (mark, gen, ex) in enumerate(rows):
+        y0 = top + i * (row_h + gap)
+        y1 = y0 + row_h
+        accent = lerp(EMERALD, INDIGO, i / (len(rows) - 1))
+
+        d.rounded_rectangle([x_badge - 4 * SS, y0, x_div - 24 * SS, y1], radius=12 * SS,
+                            fill=tuple(round(c * 0.10) for c in accent))
+        cy = (y0 + y1) / 2
+        d.ellipse([x_badge, cy - 20 * SS, x_badge + 40 * SS, cy + 20 * SS], fill=accent)
+        center_text(d, (x_badge, cy - 20 * SS, x_badge + 40 * SS, cy + 20 * SS),
+                    mark, f_badge, INK_DEEP)
+
+        lines = gen.split("\n")
+        ly = cy - len(lines) * 15 * SS
+        for ln in lines:
+            d.text((x_gen, ly), ln, font=f_gen, fill=WHITE)
+            ly += 30 * SS
+
+        lines = ex.split("\n")
+        ly = cy - len(lines) * 14 * SS
+        for ln in lines:
+            d.text((x_ex, ly), ln, font=f_ex, fill=MIST_LT)
+            ly += 28 * SS
+
+    d.line([(x_div, top), (x_div, y_end)], fill=tuple(round(c * 0.4) for c in MIST), width=SS)
+    d.text((x_gen, top - 34 * SS), "指針が示す優先順位（原文）", font=font(17, True), fill=MIST)
+    d.text((x_ex, top - 34 * SS), "転倒対策にあてはめると", font=font(17, True), fill=MIST)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：高年齢者の労働災害防止のための指針（令和8年2月10日 公示第1号）第2の1 の"
+           "リスク低減措置の優先順位、厚生労働省「STOP！転倒災害プロジェクト」をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
+# ------------------------------------------------------------------ 図14
+def figure_fall_measure_gap(out):
+    """転倒防止対策の実施率。何らかの対策は83.5%だが、身体の側の対策は5%。
+    2027年までに両面の対策を50%以上にするという目標を、破線の目盛りで重ねる"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "転倒防止対策の実施率——設備の対策は8割、身体の側の対策は5%",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS),
+           "何らかの対策に取り組む事業場は8割を超えるが、身体の側の対策まで届いている事業場は5%にとどまる",
+           font=font(19), fill=MIST)
+
+    bars = [
+        ("何らかの転倒防止対策に\n取り組んでいる", 83.5, EMERALD, True),
+        ("転倒しにくい身体づくり等の\nソフト的な対策にも取り組んでいる", 5.0, INDIGO, False),
+    ]
+
+    ax0, ax1 = 600 * SS, 1470 * SS
+    tops = [368 * SS, 568 * SS]
+    bar_h = 92 * SS
+
+    def xa(v):
+        return ax0 + (ax1 - ax0) * v / 100
+
+    f_lab = font(20, True)
+    f_val = font(34, True)
+    f_tick = font(16)
+
+    # 目盛り
+    rule = tuple(round(c * 0.34) for c in MIST)
+    for v in (0, 25, 50, 75, 100):
+        x = xa(v)
+        d.line([(x, tops[0] - 52 * SS), (x, tops[1] + bar_h + 30 * SS)], fill=rule, width=SS)
+        tb = d.textbbox((0, 0), f"{v}%", font=f_tick)
+        d.text((x - (tb[2] - tb[0]) / 2, tops[1] + bar_h + 42 * SS), f"{v}%", font=f_tick, fill=MIST)
+
+    for (label, v, accent, filled), y0 in zip(bars, tops):
+        lines = label.split("\n")
+        ly = y0 + bar_h / 2 - len(lines) * 16 * SS
+        for ln in lines:
+            w = d.textlength(ln, font=f_lab)
+            d.text((ax0 - 40 * SS - w, ly), ln, font=f_lab, fill=MIST_LT)
+            ly += 32 * SS
+
+        if filled:
+            d.rounded_rectangle([ax0, y0, xa(v), y0 + bar_h], radius=10 * SS,
+                                fill=tuple(round(c * 0.85) for c in accent))
+        else:
+            # 5% は塗ると見えない。実績を塗ったうえで、届いていない範囲を輪郭で示す
+            d.rounded_rectangle([ax0, y0, ax1, y0 + bar_h], radius=10 * SS,
+                                fill=tuple(round(c * 0.08) for c in accent),
+                                outline=tuple(round(c * 0.5) for c in accent), width=2 * SS)
+            d.rounded_rectangle([ax0, y0, xa(v), y0 + bar_h], radius=10 * SS,
+                                fill=tuple(round(c * 0.9) for c in accent))
+
+        txt = f"{v}%"
+        tb = d.textbbox((0, 0), txt, font=f_val)
+        tw = tb[2] - tb[0]
+        if filled:
+            d.text((xa(v) - tw - 26 * SS, y0 + bar_h / 2 - 26 * SS), txt, font=f_val, fill=INK_DEEP)
+        else:
+            d.text((xa(v) + 26 * SS, y0 + bar_h / 2 - 26 * SS), txt, font=f_val, fill=accent)
+
+    # 2027年の目標。両面の対策で50%以上
+    xt = xa(50)
+    for y in range(round(tops[0] - 96 * SS), round(tops[1] + bar_h + 30 * SS), 18 * SS):
+        d.line([(xt, y), (xt, y + 9 * SS)], fill=WHITE, width=2 * SS)
+    # 右端で切れないよう、canvas の右余白にそろえて右寄せする
+    f_goal = font(17, True)
+    goal = ["第14次労働災害防止計画の目標",
+            "ハード・ソフト両面からの対策に取り組む事業場を2027年までに50%以上"]
+    gy = tops[0] - 150 * SS
+    for ln in goal:
+        d.text((ax1 + 38 * SS - d.textlength(ln, font=f_goal), gy), ln, font=f_goal, fill=WHITE)
+        gy += 30 * SS
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：第14次労働災害防止計画（令和5年3月）が引用する2022年のアンケート調査"
+           "（2022年12月14日 安全衛生分科会配付資料、回答206事業場）をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
 def main():
     web = Path(sys.argv[1])
     outdir = web / "public/images/columns"
@@ -913,6 +1074,8 @@ def main():
     figure_rate_by_age(outdir / "fig-rate-by-age.jpg")
     figure_fall_patterns(outdir / "fig-fall-patterns.jpg")
     figure_fall_rate_by_age_sex(outdir / "fig-fall-rate-by-age-sex.jpg")
+    figure_fall_measure_order(outdir / "fig-fall-measure-order.jpg")
+    figure_fall_measure_gap(outdir / "fig-fall-measure-gap.jpg")
 
 
 if __name__ == "__main__":
