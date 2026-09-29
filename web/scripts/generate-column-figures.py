@@ -1057,6 +1057,163 @@ def figure_fall_measure_gap(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------ 図15
+def figure_two_step_two_scales(out):
+    """同じ2ステップ値でも、当てる物差しで位置づけが変わる。
+    共通の横軸の上下に、ロコモ度（臨床判断値）と別添3の5段階評価を並べ、
+    区切りが一致していないことを見せる"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "2ステップ値の2つの物差し——区切りは一致していない",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "臨床判断値（日本整形外科学会）と、職場の体力チェックの5段階評価（通達 別添3）",
+           font=font(19), fill=MIST)
+
+    ax0, ax1 = 150 * SS, 1500 * SS
+    v_min, v_max = 0.80, 1.80
+
+    def xa(v):
+        return ax0 + (ax1 - ax0) * (v - v_min) / (v_max - v_min)
+
+    f_band = font(19, True)
+    f_edge = font(17, True)
+    f_head = font(21, True)
+
+    # 上段：ロコモ度。見出し・帯・目盛りラベルは縦に段を分けて重ならないようにする
+    y0, bh = 254 * SS, 120 * SS
+    d.text((92 * SS, y0 - 44 * SS), "臨床判断値（ロコモ度）", font=f_head, fill=INDIGO)
+    loco = [(v_min, 0.9, "ロコモ度3"), (0.9, 1.1, "ロコモ度2"),
+            (1.1, 1.3, "ロコモ度1"), (1.3, v_max, "該当なし")]
+    for i, (a, b, name) in enumerate(loco):
+        x0v, x1v = xa(a), xa(b)
+        # 進行しているほど濃く
+        t = 1 - i / (len(loco) - 1)
+        d.rounded_rectangle([x0v + 2 * SS, y0, x1v - 2 * SS, y0 + bh], radius=10 * SS,
+                            fill=tuple(round(c * (0.16 + 0.22 * t)) for c in INDIGO),
+                            outline=tuple(round(c * (0.5 + 0.5 * t)) for c in INDIGO), width=2 * SS)
+        center_text(d, (x0v, y0, x1v, y0 + bh), name, f_band, WHITE)
+
+    # 下段：別添3の5段階
+    y1 = 536 * SS
+    d.text((92 * SS, y1 - 44 * SS), "職場の体力チェック（通達 別添3 の評価表）", font=f_head, fill=EMERALD)
+    sheet = [(v_min, 1.245, "1"), (1.245, 1.385, "2"), (1.385, 1.465, "3"),
+             (1.465, 1.655, "4"), (1.655, v_max, "5")]
+    for i, (a, b, name) in enumerate(sheet):
+        x0v, x1v = xa(a), xa(b)
+        t = 1 - i / (len(sheet) - 1)
+        d.rounded_rectangle([x0v + 2 * SS, y1, x1v - 2 * SS, y1 + bh], radius=10 * SS,
+                            fill=tuple(round(c * (0.16 + 0.22 * t)) for c in EMERALD),
+                            outline=tuple(round(c * (0.5 + 0.5 * t)) for c in EMERALD), width=2 * SS)
+        center_text(d, (x0v, y1, x1v, y1 + bh), name, f_band, WHITE)
+
+    # 中央の軸。上段の目盛りは軸の上、下段の目盛りは軸の下に置いて重なりを避ける
+    axis_y = (y0 + bh + y1) / 2
+    d.line([(ax0, axis_y), (ax1, axis_y)], fill=tuple(round(c * 0.8) for c in MIST), width=2 * SS)
+    for v, accent, up in [(0.9, INDIGO, True), (1.1, INDIGO, True), (1.3, INDIGO, True),
+                          (1.245, EMERALD, False), (1.385, EMERALD, False),
+                          (1.465, EMERALD, False), (1.655, EMERALD, False)]:
+        x = xa(v)
+        # 境目から自分の帯へ伸ばす線
+        y_to = y0 + bh if up else y1
+        d.line([(x, axis_y), (x, y_to)], fill=tuple(round(c * 0.75) for c in accent), width=2 * SS)
+        d.ellipse([x - 5 * SS, axis_y - 5 * SS, x + 5 * SS, axis_y + 5 * SS], fill=accent)
+        # 評価表は「1.24以下」「1.25以上」と境界が離散値なので、表記も原文に合わせる
+        label = f"{v:g}" if up else f"{v - 0.005:.2f}"
+        tb = d.textbbox((0, 0), label, font=f_edge)
+        ly = axis_y - 34 * SS if up else axis_y + 12 * SS
+        d.text((x - (tb[2] - tb[0]) / 2, ly), label, font=f_edge, fill=accent)
+
+    # ずれの一例。1.27 は5段階では2だが、臨床判断値ではロコモ度1
+    ex = 1.27
+    x = xa(ex)
+    for y in range(round(y0 - 22 * SS), round(y1 + bh + 26 * SS), 18 * SS):
+        d.line([(x, y), (x, y + 9 * SS)], fill=(255, 255, 255), width=3 * SS)
+    note_y = y1 + bh + 56 * SS
+    d.rounded_rectangle([92 * SS, note_y, 92 * SS + 14 * SS, note_y + 52 * SS],
+                        radius=3 * SS, fill=(255, 255, 255))
+    d.text((92 * SS + 34 * SS, note_y),
+           "例：2ステップ値 1.27 は、5段階の評価表では「2」にあたる", font=font(20, True), fill=WHITE)
+    d.text((92 * SS + 34 * SS, note_y + 30 * SS),
+           "同じ値が、臨床判断値では 1.3 未満なので「ロコモ度1」に該当する",
+           font=font(20, True), fill=MIST_LT)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：公益社団法人日本整形外科学会「ロコモ度を判定する『臨床判断値』に『ロコモ度3』を追加」（令和2年9月10日）および"
+           "「高年齢者の労働災害防止のための指針」について（令和8年2月10日付け基発0210第1号）別添3 をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
+# ------------------------------------------------------------------ 図16
+def figure_selfcheck_coverage(out):
+    """通達が示す体力チェックの範囲と、別添3の5項目の対応。
+    感覚機能・認知機能に対応する項目が置かれていないことを空欄で示す"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "別添3の5項目が埋める範囲と、埋まらない範囲",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "通達は体力チェックの範囲を定めたうえで、感覚機能・認知機能等を含めて差し支えないとしている",
+           font=font(19), fill=MIST)
+
+    f_head = font(18, True)
+    f_name = font(21, True)
+    f_item = font(17)
+
+    rows = [
+        ("筋力", ["2ステップテスト（歩行能力・筋力）"], True),
+        ("バランス能力", ["ファンクショナルリーチ（動的バランス）",
+                     "閉眼片足立ち／開眼片足立ち（静的バランス）"], True),
+        ("敏捷性", ["座位ステッピングテスト（敏捷性）"], True),
+        ("全身持久力", ["別添2「全身持久力評価方法」で別に示されている"], None),
+        ("感覚機能", [], False),
+        ("認知機能", [], False),
+    ]
+
+    # 6行と凡例・出典が収まるよう、行の高さを詰めて上に寄せる
+    x0, y0 = 92 * SS, 226 * SS
+    rw, rh, rgap = 1416 * SS, 72 * SS, 10 * SS
+    col = x0 + 330 * SS
+
+    d.text((x0 + 22 * SS, y0 - 36 * SS), "通達が挙げる体力チェックの範囲", font=f_head, fill=MIST)
+    d.text((col, y0 - 36 * SS), "別添3「転倒等リスク評価セルフチェック票」の項目", font=f_head, fill=MIST)
+
+    for i, (name, items, covered) in enumerate(rows):
+        y = y0 + i * (rh + rgap)
+        if covered is True:
+            accent, fill_t, out_t = EMERALD, 0.10, 0.55
+        elif covered is None:
+            accent, fill_t, out_t = MIST, 0.10, 0.45
+        else:
+            accent, fill_t, out_t = INDIGO, 0.16, 1.0
+        d.rounded_rectangle([x0, y, x0 + rw, y + rh], radius=14 * SS,
+                            fill=tuple(round(c * fill_t) for c in accent),
+                            outline=tuple(round(c * out_t) for c in accent), width=2 * SS)
+        d.rounded_rectangle([x0, y, x0 + 5 * SS, y + rh], radius=3 * SS, fill=accent)
+        d.text((x0 + 26 * SS, y + (rh - 26 * SS) / 2), name, font=f_name, fill=WHITE)
+        if items:
+            top = y + (rh - (len(items) * 26 * SS)) / 2
+            for j, it in enumerate(items):
+                d.text((col, top + j * 26 * SS), it, font=f_item, fill=MIST_LT)
+        else:
+            d.text((col, y + (rh - 22 * SS) / 2), "対応する項目なし——別の測定で補う必要がある",
+                   font=font(17, True), fill=INDIGO)
+
+    ly = y0 + len(rows) * (rh + rgap) + 26 * SS
+    for (cx, accent, label) in [(x0, EMERALD, "別添3の5項目で埋まる"),
+                                (x0 + 380 * SS, MIST, "別の別添で示されている"),
+                                (x0 + 760 * SS, INDIGO, "対応する項目がない")]:
+        d.rounded_rectangle([cx, ly + 6 * SS, cx + 26 * SS, ly + 17 * SS], radius=5 * SS, fill=accent)
+        d.text((cx + 40 * SS, ly), label, font=font(17), fill=MIST)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：「高年齢者の労働災害防止のための指針」について（令和8年2月10日付け基発0210第1号）５(2)ウ および別添3 をもとに作成。"
+           "範囲の区分は同通達５(2)アによる",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
 def main():
     web = Path(sys.argv[1])
     outdir = web / "public/images/columns"
@@ -1076,6 +1233,8 @@ def main():
     figure_fall_rate_by_age_sex(outdir / "fig-fall-rate-by-age-sex.jpg")
     figure_fall_measure_order(outdir / "fig-fall-measure-order.jpg")
     figure_fall_measure_gap(outdir / "fig-fall-measure-gap.jpg")
+    figure_two_step_two_scales(outdir / "fig-two-step-two-scales.jpg")
+    figure_selfcheck_coverage(outdir / "fig-selfcheck-coverage.jpg")
 
 
 if __name__ == "__main__":

@@ -457,6 +457,78 @@ def kv_prevention_layers(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_two_scales(out):
+    """一本の軸に、区切り位置の違う2つの目盛りを重ねる、を絵にする。
+    上段は4区画（臨床判断値）、下段は5区画（職場の5段階評価）。
+    同じ位置を指す白い縦線が、上下で別の区画に入ることを見せる"""
+    ax0, ax1 = 120 * SS, 1080 * SS
+    # 0.80〜1.80 を 0〜1 に正規化した位置
+    def xa(v):
+        return ax0 + (ax1 - ax0) * (v - 0.80) / (1.80 - 0.80)
+
+    upper = [(0.80, 0.9), (0.9, 1.1), (1.1, 1.3), (1.3, 1.80)]
+    lower = [(0.80, 1.245), (1.245, 1.385), (1.385, 1.465), (1.465, 1.655), (1.655, 1.80)]
+
+    y_up, y_lo, bh = 168 * SS, 372 * SS, 118 * SS
+    radius = 12 * SS
+    mark = 1.27
+
+    img = base()
+
+    def shapes(d):
+        for (a, b) in upper:
+            d.rounded_rectangle([xa(a) + 3 * SS, y_up, xa(b) - 3 * SS, y_up + bh], radius=radius,
+                                fill=tuple(round(c * 0.4) for c in INDIGO))
+        for (a, b) in lower:
+            d.rounded_rectangle([xa(a) + 3 * SS, y_lo, xa(b) - 3 * SS, y_lo + bh], radius=radius,
+                                fill=tuple(round(c * 0.4) for c in EMERALD))
+    img = glow(img, shapes, blur=26, strength=0.75)
+
+    d = ImageDraw.Draw(img)
+    # 上段：進行している側（左）ほど濃く
+    for i, (a, b) in enumerate(upper):
+        t = 1 - i / (len(upper) - 1)
+        accent = INDIGO
+        layer, mask, pos = gradient_bar([xa(a) + 3 * SS, y_up, xa(b) - 3 * SS, y_up + bh],
+                                        lerp(INK_SOFT, accent, 0.35 + 0.65 * t),
+                                        lerp(INK_SOFT, accent, 0.15 + 0.5 * t), radius)
+        img.paste(layer, pos, mask)
+    for i, (a, b) in enumerate(lower):
+        t = 1 - i / (len(lower) - 1)
+        accent = EMERALD
+        layer, mask, pos = gradient_bar([xa(a) + 3 * SS, y_lo, xa(b) - 3 * SS, y_lo + bh],
+                                        lerp(INK_SOFT, accent, 0.35 + 0.65 * t),
+                                        lerp(INK_SOFT, accent, 0.15 + 0.5 * t), radius)
+        img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+
+    # 中央の軸。2つの目盛りが同じ1本の値の上にあることを示す
+    axis_y = (y_up + bh + y_lo) / 2
+    d.line([(ax0, axis_y), (ax1, axis_y)], fill=tuple(round(c * 0.55) for c in MIST), width=3 * SS)
+
+    # 区切りの位置を軸の上に点で落とす。上下で位置がずれていることが要点
+    for v in [0.9, 1.1, 1.3]:
+        x = xa(v)
+        d.line([(x, y_up + bh), (x, axis_y)], fill=tuple(round(c * 0.7) for c in INDIGO), width=2 * SS)
+        d.ellipse([x - 6 * SS, axis_y - 6 * SS, x + 6 * SS, axis_y + 6 * SS], fill=INDIGO)
+    for v in [1.245, 1.385, 1.465, 1.655]:
+        x = xa(v)
+        d.line([(x, axis_y), (x, y_lo)], fill=tuple(round(c * 0.7) for c in EMERALD), width=2 * SS)
+        d.ellipse([x - 6 * SS, axis_y - 6 * SS, x + 6 * SS, axis_y + 6 * SS], fill=EMERALD)
+
+    # 同じ値を指す一本の線。上下で別の区画に入る
+    mx = xa(mark)
+    for y in range(round(y_up - 30 * SS), round(y_lo + bh + 34 * SS), 18 * SS):
+        d.line([(mx, y), (mx, y + 9 * SS)], fill=(255, 255, 255), width=4 * SS)
+    d.ellipse([mx - 9 * SS, y_up + bh / 2 - 9 * SS, mx + 9 * SS, y_up + bh / 2 + 9 * SS],
+              fill=(255, 255, 255))
+    d.ellipse([mx - 9 * SS, y_lo + bh / 2 - 9 * SS, mx + 9 * SS, y_lo + bh / 2 + 9 * SS],
+              fill=(255, 255, 255))
+
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -465,6 +537,7 @@ KEYVISUALS = {
     "elderly-worker-accidents-why-increasing": kv_accidents_increasing,
     "fall-accident-patterns": kv_fall_patterns,
     "fall-prevention-workplace-measures": kv_prevention_layers,
+    "two-step-test-method-and-reading": kv_two_scales,
 }
 
 
