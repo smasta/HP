@@ -28,6 +28,7 @@ const ORDER = [
   "anti-social",
   "social-media",
   "cookie",
+  "reaxion-app",
 ] as const;
 
 export const policies: Policy[] = ORDER.filter((slug) => raw[slug]).map(
