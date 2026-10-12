@@ -529,6 +529,41 @@ def kv_two_scales(out):
     save(img, out)
 
 
+def kv_single_leg(out):
+    """同じ人の片脚立ちでも、目を閉じると区分が下がる、を絵にする。
+    上段（開眼）は右上がりの5本、下段（閉眼）は同じ並びで一段低い。細い軸が一本だけで立つ脚を暗示する"""
+    n, bw, gap = 5, 120 * SS, 28 * SS
+    total = n * bw + (n - 1) * gap
+    x0 = (W * SS - total) / 2
+    base_up, base_lo = 292 * SS, 548 * SS
+    h_up = [60, 92, 128, 164, 200]
+    h_lo = [30, 52, 78, 104, 130]
+    img = base()
+
+    def shapes(d):
+        for i in range(n):
+            xa = x0 + i * (bw + gap)
+            d.rounded_rectangle([xa, base_up - h_up[i] * SS, xa + bw, base_up], radius=10 * SS,
+                                fill=tuple(round(c * 0.4) for c in EMERALD))
+            d.rounded_rectangle([xa, base_lo - h_lo[i] * SS, xa + bw, base_lo], radius=10 * SS,
+                                fill=tuple(round(c * 0.4) for c in INDIGO))
+    img = glow(img, shapes, blur=24, strength=0.7)
+
+    for i in range(n):
+        xa = x0 + i * (bw + gap)
+        t = i / (n - 1)
+        for base_y, hs, accent in [(base_up, h_up, EMERALD), (base_lo, h_lo, INDIGO)]:
+            layer, mask, pos = gradient_bar([xa, base_y - hs[i] * SS, xa + bw, base_y],
+                                            lerp(INK_SOFT, accent, 0.35 + 0.65 * t),
+                                            lerp(INK_SOFT, accent, 0.15 + 0.5 * t), 10 * SS)
+            img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+    for base_y in (base_up, base_lo):
+        d.line([(x0 - 14 * SS, base_y + 8 * SS), (x0 + total + 14 * SS, base_y + 8 * SS)],
+               fill=tuple(round(c * 0.55) for c in MIST), width=3 * SS)
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -538,6 +573,7 @@ KEYVISUALS = {
     "fall-accident-patterns": kv_fall_patterns,
     "fall-prevention-workplace-measures": kv_prevention_layers,
     "two-step-test-method-and-reading": kv_two_scales,
+    "single-leg-stance-test-what-it-shows": kv_single_leg,
 }
 
 

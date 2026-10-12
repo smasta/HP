@@ -1214,6 +1214,55 @@ def figure_selfcheck_coverage(out):
     save(img, out)
 
 
+def figure_single_leg_scales(out):
+    """片脚立ちの5段階評価（通達 別添3）と、同じ票の質問票（自覚）の選択肢を、
+    閉眼・開眼それぞれで並べる。実測と自覚を同じ5段階で比べられることを見せる"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "片脚立ちの5段階評価——実測の区分と、質問票（自覚）の選択肢",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "同じ票の中で、実測と自覚を同じ5段階に置いて比べる（通達 別添3）",
+           font=font(19), fill=MIST)
+
+    rows = [
+        ("閉眼片足立ち", "実測（秒）", ["〜7", "7.1〜17", "17.1〜55", "55.1〜90", "90.1〜"], EMERALD),
+        ("", "自覚（質問7）", ["10秒以内", "20秒程度", "40秒程度", "1分程度", "それ以上"], INDIGO),
+        ("開眼片足立ち", "実測（秒）", ["〜15", "15.1〜30", "30.1〜84", "84.1〜120", "120.1〜"], EMERALD),
+        ("", "自覚（質問9）", ["15秒以内", "30秒程度", "1分程度", "1分30秒程度", "2分以上"], INDIGO),
+    ]
+    x_label, x0, cw, gap, bh = 92 * SS, 420 * SS, 210 * SS, 8 * SS, 96 * SS
+    y = 262 * SS
+    f_head = font(22, True)
+    f_sub = font(19)
+    f_cell = font(22, True)
+    for gi, (title, kind, cells, accent) in enumerate(rows):
+        if title:
+            if gi:
+                y += 34 * SS
+            d.text((x_label, y - 36 * SS), title, font=f_head, fill=WHITE)
+        d.text((x_label, y + 36 * SS), kind, font=f_sub, fill=accent)
+        for i, text in enumerate(cells):
+            t = i / (len(cells) - 1)
+            xa0 = x0 + i * (cw + gap)
+            d.rounded_rectangle([xa0, y, xa0 + cw, y + bh], radius=10 * SS,
+                                fill=tuple(round(c * (0.14 + 0.2 * t)) for c in accent),
+                                outline=tuple(round(c * (0.45 + 0.55 * t)) for c in accent), width=2 * SS)
+            center_text(d, (xa0, y, xa0 + cw, y + bh), text, f_cell, WHITE)
+        y += bh + 14 * SS
+
+    for i in range(5):
+        xa0 = x0 + i * (cw + gap)
+        label = f"評価 {i + 1}"
+        tb = d.textbbox((0, 0), label, font=f_sub)
+        d.text((xa0 + (cw - (tb[2] - tb[0])) / 2, 206 * SS), label, font=f_sub, fill=MIST_LT)
+
+    d.text((92 * SS, CH - 74 * SS),
+           "出典：「高年齢者の労働災害防止のための指針」について（令和8年2月10日付け基発0210第1号）別添3 の評価表と質問票をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
 def main():
     web = Path(sys.argv[1])
     outdir = web / "public/images/columns"
@@ -1235,6 +1284,7 @@ def main():
     figure_fall_measure_gap(outdir / "fig-fall-measure-gap.jpg")
     figure_two_step_two_scales(outdir / "fig-two-step-two-scales.jpg")
     figure_selfcheck_coverage(outdir / "fig-selfcheck-coverage.jpg")
+    figure_single_leg_scales(outdir / "fig-single-leg-scales.jpg")
 
 
 if __name__ == "__main__":
