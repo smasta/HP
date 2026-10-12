@@ -1263,6 +1263,62 @@ def figure_single_leg_scales(out):
     save(img, out)
 
 
+def figure_cognitive_domains(out):
+    """認知機能の領域を、日本神経学会のガイドラインの7領域と、DSM-5の6領域で並べ、
+    対応する領域を線で結ぶ。「認知機能」は一つの能力ではなく領域の集まりであることを見せる"""
+    img = base()
+    d = ImageDraw.Draw(img)
+
+    d.text((92 * SS, 78 * SS), "認知機能は、一つの能力ではなく領域の集まり",
+           font=font(30, True), fill=WHITE)
+    d.text((92 * SS, 126 * SS), "分け方は資料によって異なる。ここでは2つの分類を並べて、対応する領域を結んだ",
+           font=font(19), fill=MIST)
+
+    left = ["注意", "遂行機能", "記憶", "言語", "視空間認知", "行為", "社会的認知"]
+    right = ["複雑性注意", "遂行機能", "学習と記憶", "言語", "知覚-運動", "社会的認知"]
+    # 左の添字 -> 右の添字
+    link = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 4, 6: 5}
+
+    xl0, xl1 = 120 * SS, 520 * SS
+    xr0, xr1 = 1080 * SS, 1480 * SS
+    top, bottom = 250 * SS, 780 * SS
+    bh = 54 * SS
+
+    def ys(n, i):
+        return top + (bottom - top - bh) * i / (n - 1)
+
+    d.text((xl0, 196 * SS), "日本神経学会の認知症疾患診療ガイドライン", font=font(20, True), fill=EMERALD)
+    d.text((xr0, 196 * SS), "DSM-5 の神経認知領域", font=font(20, True), fill=INDIGO)
+
+    # 結ぶ線（先に描いて、箱で端を隠す）
+    for li, ri in link.items():
+        y_l = ys(len(left), li) + bh / 2
+        y_r = ys(len(right), ri) + bh / 2
+        d.line([(xl1, y_l), (xr0, y_r)], fill=tuple(round(c * 0.55) for c in MIST), width=2 * SS)
+
+    f = font(22, True)
+    for i, name in enumerate(left):
+        y = ys(len(left), i)
+        d.rounded_rectangle([xl0, y, xl1, y + bh], radius=10 * SS,
+                            fill=tuple(round(c * 0.26) for c in EMERALD),
+                            outline=tuple(round(c * 0.9) for c in EMERALD), width=2 * SS)
+        center_text(d, (xl0, y, xl1, y + bh), name, f, WHITE)
+    for i, name in enumerate(right):
+        y = ys(len(right), i)
+        d.rounded_rectangle([xr0, y, xr1, y + bh], radius=10 * SS,
+                            fill=tuple(round(c * 0.26) for c in INDIGO),
+                            outline=tuple(round(c * 0.9) for c in INDIGO), width=2 * SS)
+        center_text(d, (xr0, y, xr1, y + bh), name, f, WHITE)
+
+    d.text((92 * SS, CH - 96 * SS),
+           "複雑性注意には、持続・分配・選択の各注意と処理速度が含まれる。視空間認知と行為は、DSM-5では知覚-運動にまとめられる（対応づけは本稿の整理）",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    d.text((92 * SS, CH - 66 * SS),
+           "出典：日本神経学会「認知症疾患診療ガイドライン2017」第2章 CQ2-1、Johns Hopkins Psychiatry Guide「Neurocognitive Domains and Neuropsychological Testing」をもとに作成",
+           font=font(16), fill=tuple(round(c * 0.85) for c in MIST))
+    save(img, out)
+
+
 def main():
     web = Path(sys.argv[1])
     outdir = web / "public/images/columns"
@@ -1285,6 +1341,7 @@ def main():
     figure_two_step_two_scales(outdir / "fig-two-step-two-scales.jpg")
     figure_selfcheck_coverage(outdir / "fig-selfcheck-coverage.jpg")
     figure_single_leg_scales(outdir / "fig-single-leg-scales.jpg")
+    figure_cognitive_domains(outdir / "fig-cognitive-domains.jpg")
 
 
 if __name__ == "__main__":

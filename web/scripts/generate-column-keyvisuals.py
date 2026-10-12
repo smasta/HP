@@ -564,6 +564,46 @@ def kv_single_leg(out):
     save(img, out)
 
 
+def kv_cognitive_domains(out):
+    """一つの中心に、領域が環状に連なる、を絵にする。
+    中心から伸びる細い線の先に7つの節があり、上の一つだけが大きく発光する（注意は他を支える土台）"""
+    import math
+    cx, cy = W * SS / 2, H * SS / 2 + 6 * SS
+    R = 214 * SS
+    n = 7
+    pts = []
+    for i in range(n):
+        a = -math.pi / 2 + 2 * math.pi * i / n
+        pts.append((cx + R * math.cos(a), cy + R * math.sin(a)))
+    img = base()
+
+    def shapes(d):
+        r0 = 52 * SS
+        d.ellipse([cx - r0, cy - r0, cx + r0, cy + r0], fill=tuple(round(c * 0.5) for c in INDIGO))
+        for i, (x, y) in enumerate(pts):
+            r = (40 if i == 0 else 26) * SS
+            d.ellipse([x - r, y - r, x + r, y + r], fill=tuple(round(c * 0.5) for c in EMERALD))
+    img = glow(img, shapes, blur=26, strength=0.8)
+
+    d = ImageDraw.Draw(img)
+    for i, (x, y) in enumerate(pts):
+        d.line([(cx, cy), (x, y)], fill=tuple(round(c * 0.5) for c in MIST), width=2 * SS)
+    # 隣り合う節を細い弧で結ぶ
+    for i in range(n):
+        x0, y0 = pts[i]
+        x1, y1 = pts[(i + 1) % n]
+        d.line([(x0, y0), (x1, y1)], fill=tuple(round(c * 0.28) for c in MIST), width=2 * SS)
+    r0 = 52 * SS
+    d.ellipse([cx - r0, cy - r0, cx + r0, cy + r0], fill=lerp(INK_SOFT, INDIGO, 0.75),
+              outline=INDIGO, width=3 * SS)
+    for i, (x, y) in enumerate(pts):
+        r = (40 if i == 0 else 26) * SS
+        d.ellipse([x - r, y - r, x + r, y + r],
+                  fill=lerp(INK_SOFT, EMERALD, 0.9 if i == 0 else 0.6),
+                  outline=EMERALD, width=3 * SS)
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -574,6 +614,7 @@ KEYVISUALS = {
     "fall-prevention-workplace-measures": kv_prevention_layers,
     "two-step-test-method-and-reading": kv_two_scales,
     "single-leg-stance-test-what-it-shows": kv_single_leg,
+    "cognitive-function-what-it-is": kv_cognitive_domains,
 }
 
 
