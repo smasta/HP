@@ -654,6 +654,50 @@ def kv_cognitive_exercise(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_reaction_time(out):
+    """課題の型で反応時間が変わる、を絵にする。
+    左端の縦線が刺激の瞬間。そこから右へ3本の棒が伸び、
+    単純反応・Go/No-Go・選択反応の順に長くなる（ドンデルスが報告した a<c<b の順）"""
+    lengths = [0.42, 0.62, 0.86]          # 刺激からの長さの比
+    bar_h, gap = 86 * SS, 54 * SS
+    x0 = 150 * SS
+    span = CW - x0 - 150 * SS
+    total_h = len(lengths) * bar_h + (len(lengths) - 1) * gap
+    y0 = (CH - total_h) / 2
+    radius = 43 * SS
+
+    def bars():
+        for i, ratio in enumerate(lengths):
+            y = y0 + i * (bar_h + gap)
+            yield i, y, x0 + span * ratio
+
+    img = base()
+
+    def shapes(d):
+        for i, y, x1 in bars():
+            accent = lerp(EMERALD, INDIGO, i / (len(lengths) - 1))
+            d.rounded_rectangle([x0, y, x1, y + bar_h], radius=radius,
+                                fill=tuple(round(c * 0.5) for c in accent))
+    img = glow(img, shapes, blur=28, strength=0.85)
+
+    d = ImageDraw.Draw(img)
+    for i, y, x1 in bars():
+        accent = lerp(EMERALD, INDIGO, i / (len(lengths) - 1))
+        layer, mask, pos = gradient_bar([x0, y, x1, y + bar_h],
+                                        accent, lerp(accent, INK_SOFT, 0.5), radius)
+        img.paste(layer, pos, mask)
+        d = ImageDraw.Draw(img)
+        # 棒の右端。反応が起きた瞬間を点で示す
+        d.ellipse([x1 - 13 * SS, y + bar_h / 2 - 13 * SS, x1 + 13 * SS, y + bar_h / 2 + 13 * SS],
+                  fill=(255, 255, 255))
+
+    # 刺激の瞬間を示す縦線。3本の起点がそろっていることを見せる
+    d.rounded_rectangle([x0 - 10 * SS, y0 - 44 * SS, x0 - 4 * SS, y0 + total_h + 44 * SS],
+                        radius=3 * SS, fill=(255, 255, 255))
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -666,6 +710,7 @@ KEYVISUALS = {
     "single-leg-stance-test-what-it-shows": kv_single_leg,
     "cognitive-function-what-it-is": kv_cognitive_domains,
     "cognitive-exercise-what-it-is": kv_cognitive_exercise,
+    "reaction-time-types": kv_reaction_time,
 }
 
 
