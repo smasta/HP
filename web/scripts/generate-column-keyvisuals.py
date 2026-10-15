@@ -791,6 +791,61 @@ def kv_training_transfer(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_dual_task(out):
+    """課題が重なると歩行が乱れる、を絵にする。
+    左右交互の足跡を一定の間隔で並べ、途中（2つ目の課題が入る位置）から
+    間隔を詰めて左右のぶれを大きくする。縦線が課題の加わった瞬間"""
+    n_even, n_dis = 6, 7
+    foot_w, foot_h = 58 * SS, 86 * SS
+    cy = CH / 2
+    spread = 52 * SS
+    radius = 26 * SS
+
+    # まず相対位置で並べ、あとで画面幅に合わせて正規化する
+    feet = []                       # (x, y, 乱れているか)
+    x, step = 0.0, 1.0
+    for i in range(n_even):
+        feet.append((x, cy + (-spread if i % 2 == 0 else spread), False))
+        x += step
+    switch_rel = x - step / 2
+    jitter = [0.0, 0.42, -0.3, 0.72, -0.18, 0.95, 0.35]
+    for i in range(n_dis):
+        # 間隔を詰め、左右のぶれを大きくする
+        x += step * (0.72 - i * 0.03)
+        wobble = spread * (1.3 + jitter[i] * 0.45)
+        feet.append((x, cy + (-wobble if (i + n_even) % 2 == 0 else wobble), True))
+
+    # 左右の余白をそろえて収める
+    margin = 128 * SS
+    scale = (CW - margin * 2 - foot_w) / x
+    feet = [(margin + fx * scale, fy, dis) for fx, fy, dis in feet]
+    switch_x = margin + switch_rel * scale + foot_w / 2
+
+    img = base()
+
+    def shapes(d):
+        for fx, fy, dis in feet:
+            accent = INDIGO if dis else EMERALD
+            d.rounded_rectangle([fx, fy - foot_h / 2, fx + foot_w, fy + foot_h / 2],
+                                radius=radius, fill=tuple(round(c * 0.5) for c in accent))
+    img = glow(img, shapes, blur=24, strength=0.8)
+
+    d = ImageDraw.Draw(img)
+    for fx, fy, dis in feet:
+        accent = INDIGO if dis else EMERALD
+        layer, mask, pos = gradient_bar([fx, fy - foot_h / 2, fx + foot_w, fy + foot_h / 2],
+                                        accent, lerp(accent, INK_SOFT, 0.55), radius)
+        img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+
+    # 2つ目の課題が加わる位置
+    rule = tuple(round(c * 0.85) for c in MIST)
+    for y in range(round(cy - 250 * SS), round(cy + 250 * SS), 18 * SS):
+        d.line([(switch_x, y), (switch_x, y + 9 * SS)], fill=rule, width=3 * SS)
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -806,6 +861,7 @@ KEYVISUALS = {
     "reaction-time-types": kv_reaction_time,
     "cognitive-measurement-methods": kv_measurement_methods,
     "cognitive-training-what-it-aims-for": kv_training_transfer,
+    "dual-task-what-it-is": kv_dual_task,
 }
 
 
