@@ -698,6 +698,51 @@ def kv_reaction_time(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_measurement_methods(out):
+    """目的が違えば物差しが違う、を絵にする。
+    3本の物差しを縦に並べ、目盛りの刻み幅をそれぞれ変える。
+    刻みが互いに揃わないことで、値を読み替えられない＝互いの代わりにならないことを示す"""
+    divisions = [4, 7, 12]            # 物差しごとの目盛りの数。わざと公倍数にしない
+    bar_h, gap = 92 * SS, 68 * SS
+    x0, x1 = 150 * SS, CW - 150 * SS
+    total_h = len(divisions) * bar_h + (len(divisions) - 1) * gap
+    y0 = (CH - total_h) / 2
+    radius = 18 * SS
+
+    def rules():
+        for i, n in enumerate(divisions):
+            yield i, n, y0 + i * (bar_h + gap)
+
+    img = base()
+
+    def shapes(d):
+        for i, _, y in rules():
+            accent = lerp(EMERALD, INDIGO, i / (len(divisions) - 1))
+            d.rounded_rectangle([x0, y, x1, y + bar_h], radius=radius,
+                                fill=tuple(round(c * 0.42) for c in accent))
+    img = glow(img, shapes, blur=26, strength=0.75)
+
+    d = ImageDraw.Draw(img)
+    for i, n, y in rules():
+        accent = lerp(EMERALD, INDIGO, i / (len(divisions) - 1))
+        layer, mask, pos = gradient_bar([x0, y, x1, y + bar_h],
+                                        accent, lerp(accent, INK_SOFT, 0.62), radius)
+        img.paste(layer, pos, mask)
+        d = ImageDraw.Draw(img)
+
+        # 目盛り。物差しごとに刻み幅が違うので、縦には揃わない
+        step = (x1 - x0) / n
+        for k in range(1, n):
+            x = x0 + step * k
+            long = k % 2 == 0 if n > 5 else True
+            h = bar_h * (0.52 if long else 0.3)
+            d.rounded_rectangle([x - 3 * SS, y + bar_h - h, x + 3 * SS, y + bar_h - 14 * SS],
+                                radius=3 * SS,
+                                fill=lerp((255, 255, 255), accent, 0.15 if long else 0.45))
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -711,6 +756,7 @@ KEYVISUALS = {
     "cognitive-function-what-it-is": kv_cognitive_domains,
     "cognitive-exercise-what-it-is": kv_cognitive_exercise,
     "reaction-time-types": kv_reaction_time,
+    "cognitive-measurement-methods": kv_measurement_methods,
 }
 
 
