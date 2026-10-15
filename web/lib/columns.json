@@ -2266,7 +2266,6 @@
   },
   {
     "slug": "two-step-test-method-and-reading",
-    "draft": true,
     "category": "safety",
     "title": "2ステップテストの実施方法と、結果の読み方",
     "seoTitle": "2ステップテストのやり方と結果の読み方",
@@ -2541,13 +2540,12 @@
   },
   {
     "slug": "single-leg-stance-test-what-it-shows",
-    "draft": true,
     "category": "safety",
     "title": "片脚起立テストで分かること、分からないこと",
     "seoTitle": "片脚立ちテストの基準と読み方｜15秒の意味と測定方法",
     "description": "片脚立ちには、ロコトレ、運動器不安定症の15秒、職場の体力チェックの5段階という3つの顔があります。測定の手順と、結果の読み方、分からないことを整理します。",
     "lead": "「片脚立ちが15秒未満」という数字は、どこで使われているのか。職場の体力チェックの結果に、そのまま当てはめてよいのでしょうか。",
-    "publishedAt": "2026-10-14",
+    "publishedAt": "2026-10-12",
     "keywords": [
       "片脚立ち テスト 基準",
       "開眼片脚立ち 15秒",
@@ -2828,7 +2826,6 @@
   },
   {
     "slug": "cognitive-function-what-it-is",
-    "draft": true,
     "category": "research",
     "title": "認知機能とは何か——注意・反応・判断・記憶を分けて考える",
     "seoTitle": "認知機能とは｜7つの領域と、測定の目的による違い",
