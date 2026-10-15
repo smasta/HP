@@ -604,6 +604,56 @@ def kv_cognitive_domains(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_cognitive_exercise(out):
+    """「考える」と「動く」を同時に扱う、を絵にする。
+    身体の負荷（EMERALD）と認知の負荷（INDIGO）の2本の帯を角度を変えて交差させ、
+    重なった部分だけを明るくする。片方ずつではなく重なりが主題であることを示す"""
+    bar_w, bar_h = 860 * SS, 104 * SS
+    radius = 52 * SS
+    cx, cy = CW / 2, CH / 2
+
+    def band(accent, angle, shift):
+        """回転した帯を、画像全体と同じ大きさの RGBA レイヤーとして返す"""
+        layer = Image.new("RGBA", (CW, CH), (0, 0, 0, 0))
+        bar = Image.new("RGB", (bar_w, bar_h))
+        bd = ImageDraw.Draw(bar)
+        for x in range(bar_w):
+            bd.line([(x, 0), (x, bar_h)],
+                    fill=lerp(accent, lerp(accent, INK_SOFT, 0.55), x / (bar_w - 1)))
+        mask = Image.new("L", (bar_w, bar_h), 0)
+        ImageDraw.Draw(mask).rounded_rectangle([0, 0, bar_w - 1, bar_h - 1],
+                                               radius=radius, fill=255)
+        layer.paste(bar, (round(cx - bar_w / 2), round(cy - bar_h / 2 + shift)), mask)
+        return layer.rotate(angle, resample=Image.BICUBIC, center=(cx, cy))
+
+    physical = band(EMERALD, -13, -34 * SS)
+    cognitive = band(INDIGO, 13, 34 * SS)
+
+    img = base()
+
+    # 2本の帯をぼかして下に敷き、地から浮かせる
+    halo = Image.new("RGB", (CW, CH), (0, 0, 0))
+    for layer in (physical, cognitive):
+        halo.paste(layer.convert("RGB"), (0, 0), layer.split()[3])
+    halo = halo.filter(ImageFilter.GaussianBlur(30 * SS))
+    img = Image.blend(img, ImageChops.screen(img, halo), 0.75)
+
+    img.paste(physical.convert("RGB"), (0, 0), physical.split()[3])
+    img.paste(cognitive.convert("RGB"), (0, 0), cognitive.split()[3])
+
+    # 重なり。2枚のマスクの積を取り、明るい色で塗り直す
+    overlap = ImageChops.multiply(physical.split()[3], cognitive.split()[3])
+    bright = Image.new("RGB", (CW, CH), lerp(lerp(EMERALD, INDIGO, 0.5), (255, 255, 255), 0.45))
+    glow_layer = Image.new("RGB", (CW, CH), (0, 0, 0))
+    glow_layer.paste(bright, (0, 0), overlap)
+    img = Image.blend(img, ImageChops.screen(img, glow_layer.filter(
+        ImageFilter.GaussianBlur(26 * SS))), 0.9)
+    img.paste(bright, (0, 0), overlap)
+
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -615,6 +665,7 @@ KEYVISUALS = {
     "two-step-test-method-and-reading": kv_two_scales,
     "single-leg-stance-test-what-it-shows": kv_single_leg,
     "cognitive-function-what-it-is": kv_cognitive_domains,
+    "cognitive-exercise-what-it-is": kv_cognitive_exercise,
 }
 
 
