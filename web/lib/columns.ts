@@ -162,6 +162,12 @@ export type ColumnItem = {
   description: string;
   /** 記事冒頭のリード文 */
   lead: string;
+  /**
+   * 公開日。初稿を書いた日ではなく、draft を外して実際に公開する日を入れる。
+   * 初稿の段階では作成日が入っているので、公開するときに振り直す。
+   * 一覧の並び順がこの値で決まるため、初稿作成日のまま公開すると
+   * 古い記事として埋もれる。
+   */
   publishedAt: string;
   updatedAt?: string;
   /** 検索意図の中心にある語。内部リンクの手がかりにも使う */
