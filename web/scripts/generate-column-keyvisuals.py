@@ -897,6 +897,55 @@ def kv_vision_vs_reaction(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_existing_schemes(out):
+    """既存の制度の隙間に位置する、を絵にする。
+    既にある枠を輪郭だけの四角で並べ、そのあいだに空いた一枠だけを塗って光らせる"""
+    n = 5
+    filled_at = 3                   # ここだけが新しい領域
+    box_w, gap = 168 * SS, 62 * SS
+    total = n * box_w + (n - 1) * gap
+    x0 = (CH and (CW - total) / 2)
+    top, bottom = 206 * SS, 424 * SS
+    radius = 18 * SS
+
+    def boxes():
+        for i in range(n):
+            x = x0 + i * (box_w + gap)
+            yield i, (x, top, x + box_w, bottom)
+
+    img = base()
+
+    def shapes(d):
+        for i, box in boxes():
+            if i == filled_at:
+                d.rounded_rectangle(box, radius=radius,
+                                    fill=tuple(round(c * 0.85) for c in INDIGO))
+    img = glow(img, shapes, blur=30, strength=0.95)
+
+    d = ImageDraw.Draw(img)
+    for i, box in boxes():
+        if i == filled_at:
+            layer, mask, pos = gradient_bar(box, INDIGO, lerp(INDIGO, INK_SOFT, 0.4), radius)
+            img.paste(layer, pos, mask)
+            d = ImageDraw.Draw(img)
+        else:
+            # 既にある制度。輪郭だけで、埋まっていることを示す控えめな横線を入れる
+            d.rounded_rectangle(box, radius=radius,
+                                fill=tuple(round(c * 0.1) for c in EMERALD),
+                                outline=tuple(round(c * 0.6) for c in EMERALD),
+                                width=3 * SS)
+            x, y0b, x1b, y1b = box
+            for k in range(3):
+                ly = y0b + 58 * SS + k * 46 * SS
+                d.rounded_rectangle([x + 34 * SS, ly, x1b - 34 * SS, ly + 7 * SS],
+                                    radius=4 * SS, fill=tuple(round(c * 0.4) for c in EMERALD))
+
+    d.rounded_rectangle([x0 - 34 * SS, bottom + 24 * SS, x0 + total + 34 * SS, bottom + 30 * SS],
+                        radius=3 * SS, fill=tuple(round(c * 0.6) for c in MIST))
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -914,6 +963,7 @@ KEYVISUALS = {
     "cognitive-training-what-it-aims-for": kv_training_transfer,
     "dual-task-what-it-is": kv_dual_task,
     "reaction-speed-vs-dynamic-visual-acuity": kv_vision_vs_reaction,
+    "measuring-employee-reaction-and-judgment": kv_existing_schemes,
 }
 
 
