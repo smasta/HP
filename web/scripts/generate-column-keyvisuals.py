@@ -946,6 +946,53 @@ def kv_existing_schemes(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_self_vs_measured(out):
+    """自己評価と実測のずれ、を絵にする。
+    一本の軌跡の上に、本人が思う位置を輪郭だけの丸で、実際に測れた位置を塗った丸で置き、
+    そのあいだの距離を帯で結ぶ"""
+    x0, x1 = 170 * SS, CW - 170 * SS
+    cy = CH / 2
+    self_at = x0 + (x1 - x0) * 0.34       # 本人が思う位置
+    real_at = x0 + (x1 - x0) * 0.72       # 実際に測れた位置
+    track_h = 10 * SS
+    r = 40 * SS
+
+    img = base()
+
+    def shapes(d):
+        d.rounded_rectangle([self_at, cy - 22 * SS, real_at, cy + 22 * SS],
+                            radius=22 * SS, fill=tuple(round(c * 0.5) for c in INDIGO))
+        d.ellipse([real_at - r, cy - r, real_at + r, cy + r],
+                  fill=tuple(round(c * 0.8) for c in INDIGO))
+    img = glow(img, shapes, blur=28, strength=0.85)
+
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle([x0, cy - track_h / 2, x1, cy + track_h / 2],
+                        radius=track_h / 2, fill=tuple(round(c * 0.4) for c in MIST))
+
+    # ずれの区間
+    layer, mask, pos = gradient_bar([self_at, cy - 18 * SS, real_at, cy + 18 * SS],
+                                    lerp(INDIGO, INK_SOFT, 0.55), lerp(INDIGO, INK_SOFT, 0.7), 18 * SS)
+    img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+
+    # 本人が思う位置：輪郭だけ
+    d.ellipse([self_at - r, cy - r, self_at + r, cy + r],
+              fill=INK, outline=EMERALD, width=6 * SS)
+    # 実測の位置：塗りつぶし
+    layer, mask, pos = gradient_bar([real_at - r, cy - r, real_at + r, cy + r],
+                                    INDIGO, lerp(INDIGO, INK_SOFT, 0.4), r)
+    img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+
+    # 起点の縦線
+    rule = tuple(round(c * 0.8) for c in MIST)
+    for y in range(round(cy - 130 * SS), round(cy + 130 * SS), 18 * SS):
+        d.line([(x0, y), (x0, y + 9 * SS)], fill=rule, width=3 * SS)
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -964,6 +1011,7 @@ KEYVISUALS = {
     "dual-task-what-it-is": kv_dual_task,
     "reaction-speed-vs-dynamic-visual-acuity": kv_vision_vs_reaction,
     "measuring-employee-reaction-and-judgment": kv_existing_schemes,
+    "reaction-time-for-workplace-safety": kv_self_vs_measured,
 }
 
 
