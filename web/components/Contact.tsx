@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from "react";
 import { submitContact } from "@/app/actions/contact";
 import SectionHead from "./SectionHead";
 import { brand, contactTypes } from "@/lib/content";
+import { trackEvent } from "@/lib/analytics";
 
 type Field =
   | "type"
@@ -93,6 +94,12 @@ export default function Contact() {
       const result = await submitContact({ ...values, website });
 
       if (result.ok) {
+        // 送信完了を GA4 に記録する。フォームは preventDefault 後にサーバーアクションで送るため、
+        // 拡張計測の form_submit は発火しない。GA4 側でこのイベントをキーイベントに登録している。
+        trackEvent("generate_lead", {
+          form_name: "contact",
+          contact_type: values.type,
+        });
         setSent(true);
         return;
       }
