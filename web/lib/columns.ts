@@ -291,6 +291,36 @@ export const internalLinksOf = (body: ColumnBlock[]) =>
     )
   );
 
+/**
+ * 記事ごとの被リンク。どの記事が、その記事を本文から参照しているか。
+ *
+ * 柱記事（第0期）の「関連記事の一覧」はこれで組み立てる。各記事が本文から
+ * 柱記事へリンクすれば一覧は自動で育つので、柱記事の側を手で書き足さなくてよい。
+ * backlog のルール9の前半（本文からリンクする）を守れば、後半（柱記事に一覧を置く）は
+ * ひとりでに満たされる、という関係にしている。
+ *
+ * 公開済みの記事どうしだけを数える。未公開の記事はページがなく、
+ * 未公開の記事からのリンクは誰にも見えないため。
+ */
+const backlinkIndex = (() => {
+  const index = new Map<string, ColumnItem[]>();
+
+  for (const item of columns) {
+    const seen = new Set<string>();
+    for (const { slug, published } of internalLinksOf(item.body)) {
+      // 同じ記事に何度リンクしても一覧には1回だけ出す
+      if (!published || slug === item.slug || seen.has(slug)) continue;
+      seen.add(slug);
+      index.set(slug, [...(index.get(slug) ?? []), item]);
+    }
+  }
+  return index;
+})();
+
+/** この記事を本文から参照している記事。columns の並びを引き継ぐので新しい順 */
+export const columnsLinkingTo = (item: Pick<ColumnItem, "slug">) =>
+  backlinkIndex.get(item.slug) ?? [];
+
 /** 見出しから目次を組み立てる。h2 のみを拾う */
 export const tableOfContents = (body: ColumnBlock[]) =>
   body

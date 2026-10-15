@@ -3,6 +3,7 @@ import ColumnBody from "@/components/ColumnBody";
 import ColumnCard from "@/components/ColumnCard";
 import {
   ColumnFaq,
+  ColumnLinkedFrom,
   ColumnReviewer,
   ColumnSources,
   ColumnToc,
@@ -148,6 +149,7 @@ export default async function Page({ params }: Params) {
             <ColumnFaq item={item} />
             <ColumnSources item={item} />
             <ColumnReviewer item={item} />
+            <ColumnLinkedFrom item={item} />
 
             {relatedService.length > 0 ? (
               <section data-reveal className="mt-14 border-t border-black/10 pt-8">

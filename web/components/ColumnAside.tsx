@@ -1,5 +1,5 @@
 import type { ColumnItem } from "@/lib/columns";
-import { tableOfContents } from "@/lib/columns";
+import { columnPath, columnsLinkingTo, tableOfContents } from "@/lib/columns";
 
 /** 目次。h2 に振った id と対応する */
 export function ColumnToc({ item }: { item: ColumnItem }) {
@@ -113,6 +113,40 @@ export function ColumnSources({ item }: { item: ColumnItem }) {
                 ↗
               </span>
               <span className="sr-only">（外部サイトが新しいタブで開きます）</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/**
+ * この記事を本文から参照している記事の一覧。
+ * 柱記事では、その柱が束ねている記事の一覧になる（backlog のルール9の後半）。
+ * 参照が1本もなければ何も出さないので、柱記事かどうかで分岐しなくてよい。
+ */
+export function ColumnLinkedFrom({ item }: { item: ColumnItem }) {
+  const entries = columnsLinkingTo(item);
+  if (!entries.length) return null;
+
+  return (
+    <section data-reveal className="mt-14 border-t border-black/10 pt-8">
+      <p className="eyebrow text-graphite-400">この記事を参照している記事</p>
+      <ul className="mt-4 space-y-2.5">
+        {entries.map((entry) => (
+          <li key={entry.slug}>
+            <a
+              href={columnPath(entry)}
+              className="group inline-flex items-start gap-2 text-[0.82rem] leading-[1.8] text-graphite-600 transition-colors duration-300 hover:text-ink"
+            >
+              {entry.title}
+              <span
+                aria-hidden="true"
+                className="mt-[0.2em] text-[0.72rem] text-graphite-400 transition-transform duration-300 group-hover:translate-x-0.5"
+              >
+                →
+              </span>
             </a>
           </li>
         ))}
