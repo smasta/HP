@@ -846,6 +846,57 @@ def kv_dual_task(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_vision_vs_reaction(out):
+    """動体視力と反応時間は別のもの、を絵にする。
+    上段は横に走る対象の軌跡と、見分けられた位置を示す点（動体視力）。
+    下段は同じ軌跡の上に、見てから動き出すまでの長さを示す帯（反応時間）。
+    起点をそろえ、測っている区間が重ならないことを見せる"""
+    x0, x1 = 170 * SS, CW - 170 * SS
+    y_top, y_bot = CH / 2 - 108 * SS, CH / 2 + 108 * SS
+    see_at = x0 + (x1 - x0) * 0.46        # 見分けられた位置
+    move_to = x0 + (x1 - x0) * 0.78       # 動き出した位置
+    track_h = 10 * SS
+
+    img = base()
+
+    def shapes(d):
+        d.ellipse([see_at - 34 * SS, y_top - 34 * SS, see_at + 34 * SS, y_top + 34 * SS],
+                  fill=tuple(round(c * 0.75) for c in EMERALD))
+        d.rounded_rectangle([see_at, y_bot - 34 * SS, move_to, y_bot + 34 * SS],
+                            radius=34 * SS, fill=tuple(round(c * 0.6) for c in INDIGO))
+    img = glow(img, shapes, blur=28, strength=0.85)
+
+    d = ImageDraw.Draw(img)
+
+    # 対象の軌跡。上下とも同じ長さで引く
+    for y in (y_top, y_bot):
+        d.rounded_rectangle([x0, y - track_h / 2, x1, y + track_h / 2],
+                            radius=track_h / 2, fill=tuple(round(c * 0.4) for c in MIST))
+
+    # 上段：見分けられた一点
+    layer, mask, pos = gradient_bar([see_at - 30 * SS, y_top - 30 * SS,
+                                     see_at + 30 * SS, y_top + 30 * SS],
+                                    EMERALD, lerp(EMERALD, INK_SOFT, 0.45), 30 * SS)
+    img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+
+    # 下段：見てから動き出すまでの区間
+    layer, mask, pos = gradient_bar([see_at, y_bot - 30 * SS, move_to, y_bot + 30 * SS],
+                                    INDIGO, lerp(INDIGO, INK_SOFT, 0.5), 30 * SS)
+    img.paste(layer, pos, mask)
+    d = ImageDraw.Draw(img)
+
+    # 起点をそろえる縦の破線。同じ瞬間から別のものを測っていることを示す
+    rule = tuple(round(c * 0.8) for c in MIST)
+    for y in range(round(y_top - 86 * SS), round(y_bot + 86 * SS), 18 * SS):
+        d.line([(see_at, y), (see_at, y + 9 * SS)], fill=rule, width=3 * SS)
+    # 下段の終点
+    d.rounded_rectangle([move_to - 3 * SS, y_bot - 56 * SS, move_to + 3 * SS, y_bot + 56 * SS],
+                        radius=3 * SS, fill=(255, 255, 255))
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -862,6 +913,7 @@ KEYVISUALS = {
     "cognitive-measurement-methods": kv_measurement_methods,
     "cognitive-training-what-it-aims-for": kv_training_transfer,
     "dual-task-what-it-is": kv_dual_task,
+    "reaction-speed-vs-dynamic-visual-acuity": kv_vision_vs_reaction,
 }
 
 
