@@ -743,6 +743,54 @@ def kv_measurement_methods(out):
     save(img, out)
 
 
+# ------------------------------------------------------------------
+def kv_training_transfer(out):
+    """訓練した課題から離れるほど根拠が薄くなる、を絵にする。
+    同心の3つの輪を描き、中心（訓練した課題）は明るく塗り、
+    外側（近い課題・日常生活）へ向かうほど薄くし、いちばん外は輪郭だけにする"""
+    cx, cy = CW / 2, CH / 2
+    radii = [112 * SS, 196 * SS, 280 * SS]
+
+    img = base()
+
+    def shapes(d):
+        d.ellipse([cx - radii[0], cy - radii[0], cx + radii[0], cy + radii[0]],
+                  fill=tuple(round(c * 0.85) for c in EMERALD))
+    img = glow(img, shapes, blur=34, strength=0.9)
+
+    d = ImageDraw.Draw(img)
+
+    # 外側から描く。外ほど薄く、いちばん外は塗らずに輪郭だけ
+    for i in (2, 1, 0):
+        r = radii[i]
+        accent = lerp(EMERALD, INDIGO, i / 2)
+        box = [cx - r, cy - r, cx + r, cy + r]
+        if i == 2:
+            d.ellipse(box, fill=tuple(round(c * 0.07) for c in accent),
+                      outline=tuple(round(c * 0.5) for c in accent), width=3 * SS)
+        elif i == 1:
+            d.ellipse(box, fill=tuple(round(c * 0.2) for c in accent),
+                      outline=tuple(round(c * 0.75) for c in accent), width=3 * SS)
+        else:
+            layer = Image.new("RGB", (round(r * 2), round(r * 2)))
+            ld = ImageDraw.Draw(layer)
+            for y in range(round(r * 2)):
+                ld.line([(0, y), (r * 2, y)],
+                        fill=lerp(accent, lerp(accent, INK_SOFT, 0.45), y / (r * 2 - 1)))
+            mask = Image.new("L", (round(r * 2), round(r * 2)), 0)
+            ImageDraw.Draw(mask).ellipse([0, 0, r * 2 - 1, r * 2 - 1], fill=255)
+            img.paste(layer, (round(cx - r), round(cy - r)), mask)
+            d = ImageDraw.Draw(img)
+
+    # 中心から外へ向かう目盛り。距離があることを示す
+    rule = tuple(round(c * 0.75) for c in MIST)
+    for i in range(3):
+        x = cx + radii[i]
+        d.rounded_rectangle([x - 3 * SS, cy - 17 * SS, x + 3 * SS, cy + 17 * SS],
+                            radius=3 * SS, fill=rule)
+    save(img, out)
+
+
 KEYVISUALS = {
     "elderly-worker-fitness-check": kv_fitness_check,
     "elderly-worker-safety-guideline-five-measures": kv_five_measures,
@@ -757,6 +805,7 @@ KEYVISUALS = {
     "cognitive-exercise-what-it-is": kv_cognitive_exercise,
     "reaction-time-types": kv_reaction_time,
     "cognitive-measurement-methods": kv_measurement_methods,
+    "cognitive-training-what-it-aims-for": kv_training_transfer,
 }
 
 
