@@ -216,6 +216,81 @@ export const relatedColumns = (item: ColumnItem, limit = 3) => {
   return [...sameCategory, ...others].slice(0, limit);
 };
 
+/**
+ * 本文中の内部リンク。地の文に `[[slug|表示テキスト]]` と書く。
+ *
+ * URL ではなく slug で指す。初稿は draft: true で先に書かれ、公開は後になるため、
+ * 書いた時点では相手がまだ公開されていないことがある。未公開（または綴り違い）の
+ * slug は、リンクにせず表示テキストだけを出す。404 を外に出さないことを優先する。
+ * 相手が公開された時点で、記事に手を入れなくてもリンクになる。
+ *
+ * 書けるのは地の文（p / ul / ol / dl の値 / callout）だけ。
+ * 見出しは目次の id と対応するため、引用は原文であるため、表と注記は文ではないため、
+ * いずれも対象にしない。description や FAQ もこの記法の対象外で、
+ * 構造化データに記法が漏れることはない。
+ */
+const INTERNAL_LINK = /\[\[([a-z0-9-]+)\|([^\]|]+)\]\]/g;
+
+export type ColumnTextSegment =
+  | { type: "text"; text: string }
+  | { type: "link"; href: string; text: string };
+
+export const parseColumnText = (text: string): ColumnTextSegment[] => {
+  const segments: ColumnTextSegment[] = [];
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(INTERNAL_LINK)) {
+    const [raw, slug, label] = match;
+    const start = match.index;
+    if (start > lastIndex) {
+      segments.push({ type: "text", text: text.slice(lastIndex, start) });
+    }
+    const target = findColumn(slug);
+    segments.push(
+      target
+        ? { type: "link", href: columnPath(target), text: label }
+        : { type: "text", text: label }
+    );
+    lastIndex = start + raw.length;
+  }
+
+  if (lastIndex < text.length) {
+    segments.push({ type: "text", text: text.slice(lastIndex) });
+  }
+  return segments;
+};
+
+/** リンクを書ける地の文だけを取り出す。parseColumnText をかける対象と一致させる */
+const proseOf = (block: ColumnBlock): string[] => {
+  switch (block.type) {
+    case "p":
+      return [block.text];
+    case "ul":
+    case "ol":
+    case "callout":
+      return block.items;
+    case "dl":
+      return block.items.map(([, value]) => value);
+    default:
+      return [];
+  }
+};
+
+/**
+ * 本文に書かれた内部リンクを集める。監修時の照合に使う。
+ * published が false のものは、今はリンクとして出ていない（相手が未公開）。
+ */
+export const internalLinksOf = (body: ColumnBlock[]) =>
+  body.flatMap((block) =>
+    proseOf(block).flatMap((text) =>
+      [...text.matchAll(INTERNAL_LINK)].map(([, slug, label]) => ({
+        slug,
+        label,
+        published: Boolean(findColumn(slug)),
+      }))
+    )
+  );
+
 /** 見出しから目次を組み立てる。h2 のみを拾う */
 export const tableOfContents = (body: ColumnBlock[]) =>
   body

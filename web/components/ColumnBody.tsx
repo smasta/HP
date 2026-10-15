@@ -1,6 +1,31 @@
 import Image from "next/image";
+import { Fragment } from "react";
 import type { CSSProperties } from "react";
-import type { ColumnBlock } from "@/lib/columns";
+import { parseColumnText, type ColumnBlock } from "@/lib/columns";
+
+/**
+ * 地の文。`[[slug|表示テキスト]]` を記事へのリンクにする。
+ * 相手が未公開なら parseColumnText が text を返すので、ここは何も分岐しなくてよい。
+ */
+function Prose({ text }: { text: string }) {
+  return (
+    <>
+      {parseColumnText(text).map((segment, index) =>
+        segment.type === "link" ? (
+          <a
+            key={index}
+            href={segment.href}
+            className="text-ink underline decoration-black/25 underline-offset-4 transition-colors duration-300 hover:decoration-emerald-glow"
+          >
+            {segment.text}
+          </a>
+        ) : (
+          <Fragment key={index}>{segment.text}</Fragment>
+        )
+      )}
+    </>
+  );
+}
 
 /**
  * 解説記事の本文を描画する。
@@ -47,7 +72,7 @@ export default function ColumnBody({ blocks }: { blocks: ColumnBlock[] }) {
                 data-reveal
                 className="mt-6 text-[0.95rem] leading-[2.05] text-ink"
               >
-                {block.text}
+                <Prose text={block.text} />
               </p>
             );
 
@@ -63,7 +88,7 @@ export default function ColumnBody({ blocks }: { blocks: ColumnBlock[] }) {
                       aria-hidden="true"
                       className="mt-[0.72em] h-[6px] w-[6px] shrink-0 rounded-full bg-emerald-glow"
                     />
-                    {item}
+                    <Prose text={item} />
                   </li>
                 ))}
               </ul>
@@ -83,7 +108,7 @@ export default function ColumnBody({ blocks }: { blocks: ColumnBlock[] }) {
                     >
                       {itemIndex + 1}
                     </span>
-                    {item}
+                    <Prose text={item} />
                   </li>
                 ))}
               </ol>
@@ -101,7 +126,7 @@ export default function ColumnBody({ blocks }: { blocks: ColumnBlock[] }) {
                       {label}
                     </dt>
                     <dd className="text-[0.9rem] leading-[1.9] text-ink sm:col-span-8">
-                      {value}
+                      <Prose text={value} />
                     </dd>
                   </div>
                 ))}
@@ -186,7 +211,7 @@ export default function ColumnBody({ blocks }: { blocks: ColumnBlock[] }) {
                         aria-hidden="true"
                         className="mt-[0.7em] h-[2px] w-3 shrink-0 bg-gradient-to-r from-indigo-glow to-emerald-glow"
                       />
-                      {item}
+                      <Prose text={item} />
                     </li>
                   ))}
                 </ul>
